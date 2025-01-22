@@ -39,6 +39,8 @@ immich:
 
 # Dependencies
 
+useDeprecatedPostgresChart: true
+
 postgresql:
   enabled: true
   image:
