@@ -1,0 +1,14 @@
+kind: IngressRoute
+metadata:
+  name: immich-server
+  namespace: immich
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`immich.app`)
+      services:
+        - kind: Service
+          name: immich
+          port: 2283
