@@ -8,7 +8,7 @@ spec:
   valuesContent: |-
     ports:
       immich:
-        port: 8812
+        port: 2283
         expose: true
-        exposedPort: 8812
+        exposedPort: 2283
         protocol: TCP
