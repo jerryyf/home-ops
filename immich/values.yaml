@@ -1,12 +1,6 @@
-## This chart relies on the common library chart from bjw-s
-## You can find it at https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
-## Refer there for more detail about the supported values
-
-# These entries are shared between all the Immich components
-
 env:
   REDIS_HOSTNAME: '{{ printf "%s-redis-master" .Release.Name }}'
-  DB_HOSTNAME: "{{ .Release.Name }}-postgresql"
+  DB_HOSTNAME: "{{ .Release.Name }}-postgres-rw"
   DB_USERNAME: "{{ .Values.postgresql.global.postgresql.auth.username }}"
   DB_DATABASE_NAME: "{{ .Values.postgresql.global.postgresql.auth.database }}"
   # -- You should provide your own secret outside of this helm-chart and use `postgresql.global.postgresql.auth.existingSecret` to provide credentials to the postgresql instance
@@ -14,7 +8,7 @@ env:
   IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
 
 image:
-  tag: v1.131.1
+  tag: v1.131.3
 
 immich:
   metrics:
@@ -39,13 +33,14 @@ immich:
 
 # Dependencies
 
-useDeprecatedPostgresChart: true
-
+# DEPRECATED
+# The postgres subchart is deprecated and will be removed in chart version 0.10.0
+# See https://github.com/immich-app/immich-charts/issues/149 for more detail.
 postgresql:
-  enabled: true
+  enabled: false
   image:
     repository: tensorchord/pgvecto-rs
-    tag: pg16-v0.2.1
+    tag: pg14-v0.2.0@sha256:739cdd626151ff1f796dc95a6591b55a714f341c737e27f045019ceabf8e8c52
   global:
     postgresql:
       auth:
@@ -55,13 +50,6 @@ postgresql:
   primary:
     containerSecurityContext:
       readOnlyRootFilesystem: false
-    resources:
-      requests:
-        cpu: "150m"
-        memory: "256Mi"
-      limits:
-        cpu: "150m"
-        memory: "512Mi"
     initdb:
       scripts:
         create-extensions.sql: |

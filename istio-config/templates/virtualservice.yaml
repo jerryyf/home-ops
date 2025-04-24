@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: immich-server
+  namespace: istio-system
+spec:
+  gateways:
+  - immich-gateway
+  hosts:
+  - {{ .Values.immich.hostname }}
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: immich-server.immich.svc.cluster.local
+        port:
+          number: 2283

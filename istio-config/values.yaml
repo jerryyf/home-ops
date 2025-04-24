@@ -1,0 +1,7 @@
+immich:
+  enabled: true
+  hostname:
+
+portfolio:
+  enabled: false
+  hostname:
