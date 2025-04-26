@@ -8,7 +8,7 @@ env:
   IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
 
 image:
-  tag: v1.131.3
+  tag: v1.132.1
 
 immich:
   metrics:
@@ -33,16 +33,6 @@ immich:
 
 # Dependencies
 
-# DEPRECATED
-# The postgres subchart is deprecated and will be removed in chart version 0.10.0
-# See https://github.com/immich-app/immich-charts/issues/149 for more detail.
-postgresql:
-  enabled: false
-  global:
-    postgresql:
-      auth:
-        existingSecret: immich-postgres-user
-
 redis:
   enabled: true
   architecture: standalone
@@ -52,6 +42,8 @@ redis:
 # Immich components
 
 server:
+  controller:
+    replicas: 1
   enabled: true
   image:
     repository: ghcr.io/immich-app/immich-server
@@ -69,6 +61,8 @@ server:
       tls: []
 
 machine-learning:
+  controller:
+    replicas: 1
   enabled: true
   image:
     repository: ghcr.io/immich-app/immich-machine-learning
