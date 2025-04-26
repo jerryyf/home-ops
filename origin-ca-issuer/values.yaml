@@ -1,4 +1,10 @@
 certs:
 - immich:
-    hostname:
-    secretName:
+  name: immich
+  hostname:
+  secretName:
+
+- portfolio:
+  name: portfolio
+  hostname:
+  secretName:

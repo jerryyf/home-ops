@@ -1,7 +1,14 @@
-immich:
+apps:
+- immich:
   enabled: true
+  name: immich
   hostname:
+  dest: immich-server.immich.svc.cluster.local
+  port: 2283
 
-portfolio:
-  enabled: false
+- portfolio:
+  enabled: true
+  name: portfolio
   hostname:
+  dest: portfolio.portfolio.svc.cluster.local
+  port: 3000

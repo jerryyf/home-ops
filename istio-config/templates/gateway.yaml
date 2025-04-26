@@ -1,24 +1,27 @@
+{{- range .Values.apps }}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: immich-gateway
+  name: {{ .name }}-gateway
   namespace: istio-system
 spec:
   selector:
     istio: ingress
   servers:
   - hosts:
-    - {{ .Values.immich.hostname }}
+    - {{ .hostname }}
     port:
       name: http
       number: 80
       protocol: HTTP
   - hosts:
-    - {{ .Values.immich.hostname }}
+    - {{ .hostname }}
     port:
       name: https
       number: 443
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: immich-tls
+      credentialName: {{ .name }}-tls
+---
+{{- end }}

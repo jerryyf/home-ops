@@ -2,13 +2,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: immich
+  name: {{ .name }}-tls
   namespace: istio-ingress
 spec:
   # The secret name where cert-manager should store the signed certificate
-  secretName: {{ .immich.secretName }}
+  secretName: {{ .secretName }}
   dnsNames:
-    - {{ .immich.hostname }}
+    - {{ .hostname }}
   # Duration of the certificate
   duration: 168h
   # Renew a day before the certificate expiration
@@ -18,4 +18,5 @@ spec:
     group: cert-manager.k8s.cloudflare.com
     kind: OriginIssuer
     name: prod-issuer
+---
 {{- end }}
