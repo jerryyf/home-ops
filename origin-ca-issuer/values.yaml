@@ -1,0 +1,4 @@
+certs:
+- immich:
+    hostname:
+    secretName:
