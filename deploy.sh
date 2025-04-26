@@ -29,15 +29,20 @@ helm install istio-base istio/base -n istio-system --set defaultRevision=default
 helm install istiod istio/istiod -n istio-system --set global.platform=k3s --wait 
 helm install istio-ingress istio/gateway -n istio-ingress --set global.platform=k3s --wait
 
-echo "Installing postgres operator..."
+# Install csi-driver-nfs
+echo "Installing csi-driver-nfs..."
+helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+helm install csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace kube-system --version 4.11.0
+
 # Install cnpg operator
+echo "Installing postgres operator..."
 helm upgrade --install cnpg \
     --namespace cnpg-system \
     --create-namespace \
     cnpg/cloudnative-pg
 
-echo "Configuring immich requirements..."
 # Setup immich
+echo "Configuring immich requirements..."
 kubectl create namespace immich
 kubectl label ns immich istio-injection=enabled --overwrite
 
@@ -45,7 +50,8 @@ kubectl label ns immich istio-injection=enabled --overwrite
 helm upgrade --install istio-config ./istio-config \
     --namespace istio-system \
     --create-namespace \
-    --set immich.hostname="IMMICH_HOSTNAME"
+    --set apps.immich.hostname="$IMMICH_HOSTNAME" \
+    --set apps.immich.hostname="$IMMICH_HOSTNAME"
 
 # Configure immich
 helm upgrade --install immich-config ./immich-config/ \
@@ -56,12 +62,12 @@ helm upgrade --install immich-config ./immich-config/ \
     --set nfs.volumeHandle="$NFS_VOLUMEHANDLE" \
     -f ./immich-config/values.yaml
 
-echo "Installing immich..."
 # Install immich
-helm install --create-namespace --namespace immich immich oci://ghcr.io/immich-app/immich-charts/immich -f ./immich/values.yaml
+echo "Installing immich..."
+helm upgrade --install --create-namespace --namespace immich immich oci://ghcr.io/immich-app/immich-charts/immich -f ./immich/values.yaml
 
-echo "Installing cert-manager..."
 # Install cert-manager
+echo "Installing cert-manager..."
 helm install \
     cert-manager jetstack/cert-manager \
     --namespace cert-manager \
@@ -72,5 +78,10 @@ helm install \
 # Create cloudflare issuer and certs
 # kubectl apply -f ./origin-ca-issuer/templates/issuer.yaml
 # kubectl apply -f ./origin-ca-issuer/templates/cert.yaml
+
+# Observability addons for istio
+# kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.25/samples/addons/prometheus.yaml
+# kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.25/samples/addons/kiali.yaml
+# kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.25/samples/addons/grafana.yaml
 
 echo "Done!"
