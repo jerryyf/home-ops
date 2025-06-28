@@ -1,5 +1,0 @@
-nfs:
-  enabled: true
-  server:
-  share:
-  volumeHandle:

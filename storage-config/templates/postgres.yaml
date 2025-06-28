@@ -1,8 +1,10 @@
+{{- if .Values.postgres.enabled }}
+{{- with .Values.postgres }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: immich-postgres
-  namespace: {{ .Release.Namespace }}
+  name: {{ .name }}-postgres
+  namespace: {{ $.Release.Namespace }}
 spec:
   imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16-v0.2.1
   instances: 1
@@ -31,3 +33,15 @@ spec:
   storage:
     size: 4Gi
     storageClass: local-path
+{{- end }}
+{{- end }}
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: immich-postgres-user
+  namespace: {{ $.Release.Namespace }}
+data:
+  user: {{ .Values.postgres.user | b64enc }}
+  password: {{ .Values.postgres.password | b64enc }}

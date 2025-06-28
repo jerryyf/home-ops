@@ -1,9 +1,10 @@
 {{- range .Values.apps }}
+{{- if .ingress }}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: {{ .name }}-gateway
-  namespace: istio-system
+  namespace: {{ .namespace }}
 spec:
   selector:
     istio: ingress
@@ -14,6 +15,7 @@ spec:
       name: http
       number: 80
       protocol: HTTP
+  {{- if .tls }}
   - hosts:
     - {{ .hostname }}
     port:
@@ -23,5 +25,7 @@ spec:
     tls:
       mode: SIMPLE
       credentialName: {{ .name }}-tls
+  {{- end }}
 ---
+{{- end }}
 {{- end }}
