@@ -1,9 +1,28 @@
 # home-ops
 
-Helm charts and k8s manifests for services running on a k3s cluster.
+Home-grown IaC for the homelab.
 
-## Setup
+## Services
 
-Setup kubeconfig, environment variables and run deploy.sh
+- immich
+- jerryyf.dev
 
-## Architecture
+## Components
+
+- Istio
+- Postgres Operator
+- cert-manager
+- Cloudflare Origin CA
+
+## Environments
+
+- dev (internal)
+- staging (public)
+- prod (public)
+
+## Roadmap
+
+- [ ] Argo CD
+- [ ] Secret management
+- [ ] DNS management
+- [ ] Prometheus + Grafana
