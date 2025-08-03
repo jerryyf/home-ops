@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: {{ .name }}-virtualservice
-  namespace: istio-system
+  namespace: {{ .namespace }}
 spec:
   gateways:
   - {{ .name }}-gateway
@@ -12,11 +12,11 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /
+        prefix: {{ .path }}
     route:
     - destination:
-        host: {{ .dest }}
+        host: {{ .dest.fqdn }}
         port:
-          number: {{ .port }}
+          number: {{ .dest.port }}
 ---
 {{- end }}
