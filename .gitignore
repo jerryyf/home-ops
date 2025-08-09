@@ -1,3 +1,6 @@
 .terraform*
+*.tfvars
+*.env
+*.bak
 .*log
-.env
+tmp/
