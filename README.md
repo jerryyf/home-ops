@@ -22,9 +22,12 @@ Home-grown IaC for the homelab.
 
 ## Usage
 
-1. Check environment variables required in `variables.tf`
-2. Run `terraform init`
-3. Run `terraform apply`
+In the terraform directory:
+
+1. Create `backend.tfvars` to set region, bucket, and key
+2. Create `terraform.tfvars` for all required variables
+3. Initialize backend with `terraform init -backend-config="./backend.tfvars"`
+4. Apply with `terraform apply`
 
 ## Roadmap
 

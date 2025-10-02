@@ -96,7 +96,8 @@ resource "kubernetes_manifest" "immich_postgres" {
 
 resource "helm_release" "immich" {
   name      = "immich"
-  chart     = "oci://ghcr.io/immich-app/immich-charts/immich"
+  chart     = local.chart
+  version   = local.chart_version
   namespace = "immich"
   set = [
     {
@@ -109,7 +110,7 @@ resource "helm_release" "immich" {
     },
     {
       name  = "image.tag"
-      value = "v1.143.1"
+      value = local.image_tag
     },
     {
       name  = "env.DB_HOSTNAME.valueFrom.secretKeyRef.name"
