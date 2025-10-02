@@ -2,27 +2,35 @@
 
 Home-grown IaC for the homelab.
 
-## Services
+## Features
 
-- immich
-- jerryyf.dev
+- Modular Terraform
+- Helm charts for reusable configuration
 
-## Components
+## Automation tooling
 
+- Terraform
+- Helm
+
+## Core infrastructure
+
+- K3S
 - Istio
-- Postgres Operator
 - cert-manager
-- Cloudflare Origin CA
+- Postgres Operator
+- Cloudflare
 
-## Environments
+## Usage
 
-- dev (internal)
-- staging (public)
-- prod (public)
+1. Check environment variables required in `variables.tf`
+2. Run `terraform init`
+3. Run `terraform apply`
 
 ## Roadmap
 
+- [x] Terraform
 - [ ] Argo CD
-- [ ] Secret management
-- [ ] DNS management
-- [ ] Prometheus + Grafana
+- [x] Secret management
+- [ ] DNS automation
+- [ ] VM and VXLAN Terraform
+- [ ] Kiali observability
