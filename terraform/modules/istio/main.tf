@@ -26,7 +26,7 @@ resource "helm_release" "istio_base" {
   repository       = "istio"
   chart            = "base"
   namespace        = "istio-system"
-  version          = "1.25.2"
+  version          = "1.27.0"
   atomic           = true
   create_namespace = true
   set = [{
@@ -40,7 +40,7 @@ resource "helm_release" "istiod" {
   repository       = "istio"
   chart            = "istiod"
   namespace        = "istio-system"
-  version          = "1.25.2"
+  version          = "1.27.0"
   atomic           = true
   create_namespace = true
   set = [{
@@ -55,7 +55,7 @@ resource "helm_release" "istio_ingress" {
   repository       = "istio"
   chart            = "gateway"
   namespace        = "istio-ingress"
-  version          = "1.25.2"
+  version          = "1.27.0"
   atomic           = true
   create_namespace = true
   set = [{
