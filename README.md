@@ -7,11 +7,6 @@ Home-grown IaC for the homelab.
 - Modular Terraform
 - Helm charts for reusable configuration
 
-## Automation tooling
-
-- Terraform
-- Helm
-
 ## Core infrastructure
 
 - K3S
@@ -29,11 +24,3 @@ In the terraform directory:
 3. Initialize backend with `terraform init -backend-config="./backend.tfvars"`
 4. Apply with `terraform apply`
 
-## Roadmap
-
-- [x] Terraform
-- [ ] Argo CD
-- [x] Secret management
-- [ ] DNS automation
-- [ ] VM and VXLAN Terraform
-- [ ] Kiali observability

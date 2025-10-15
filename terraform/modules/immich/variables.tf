@@ -14,7 +14,7 @@ variable "base_url" {
 locals {
   immich_path     = "${var.nfs_share}/immich"
   immich_hostname = "immich.${var.base_url}"
-  image_tag       = "v2.0.0"
+  image_tag       = "v2.0.1"
   chart           = "oci://ghcr.io/immich-app/immich-charts/immich"
-  chart_version   = "0.9.3"
+  chart_version   = "0.10.0"
 }
