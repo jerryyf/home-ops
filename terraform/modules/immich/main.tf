@@ -154,7 +154,7 @@ resource "helm_release" "immich" {
 
 resource "helm_release" "istio_config" {
   name      = "immich-ingress"
-  namespace = "immich"
+  namespace = "istio-ingress"
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [

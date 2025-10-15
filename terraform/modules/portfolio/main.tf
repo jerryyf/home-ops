@@ -35,31 +35,6 @@ resource "kubernetes_secret_v1" "webhook_telegram_env" {
   }
 }
 
-resource "helm_release" "istio_config" {
-  name      = "portfolio-ingress"
-  namespace = "portfolio-prod"
-  chart     = "${path.root}/helm/istio-config"
-  atomic    = true
-  set = [
-    {
-      name  = "hostname"
-      value = var.base_url
-    },
-    {
-      name  = "path"
-      value = "/"
-    },
-    {
-      name  = "dest"
-      value = "portfolio.portfolio-prod.svc.cluster.local"
-    },
-    {
-      name  = "port"
-      value = 3000
-    }
-  ]
-}
-
 resource "kubernetes_deployment_v1" "portfolio" {
   metadata {
     name      = "portfolio"
@@ -145,7 +120,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
       }
     }
   }
-  depends_on = [kubernetes_secret_v1.webhook_aws_env, kubernetes_secret_v1.webhook_telegram_env, helm_release.istio_config]
+  depends_on = [kubernetes_secret_v1.webhook_aws_env, kubernetes_secret_v1.webhook_telegram_env]
 }
 
 resource "kubernetes_service" "portfolio" {
@@ -166,3 +141,30 @@ resource "kubernetes_service" "portfolio" {
   }
   depends_on = [kubernetes_deployment_v1.portfolio]
 }
+
+resource "helm_release" "istio_config" {
+  name      = "portfolio-ingress"
+  namespace = "istio-ingress"
+  chart     = "${path.root}/helm/istio-config"
+  atomic    = true
+  set = [
+    {
+      name  = "hostname"
+      value = var.base_url
+    },
+    {
+      name  = "path"
+      value = "/"
+    },
+    {
+      name  = "dest"
+      value = "portfolio.portfolio-prod.svc.cluster.local"
+    },
+    {
+      name  = "port"
+      value = 3000
+    }
+  ]
+  depends_on = [ kubernetes_service.portfolio ]
+}
+
