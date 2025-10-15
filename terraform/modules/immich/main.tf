@@ -105,52 +105,48 @@ resource "helm_release" "immich" {
       value = "immich-pvc"
     },
     {
-      name  = "redis.enabled"
-      value = "true"
-    },
-    {
-      name  = "image.tag"
+      name  = "controllers.main.containers.main.image.tag"
       value = local.image_tag
     },
     {
-      name  = "env.DB_HOSTNAME.valueFrom.secretKeyRef.name"
+      name  = "controllers.main.containers.main.env.DB_HOSTNAME.valueFrom.secretKeyRef.name"
       value = "immich-postgres-app"
     },
     {
-      name  = "env.DB_HOSTNAME.valueFrom.secretKeyRef.key"
+      name  = "controllers.main.containers.main.env.DB_HOSTNAME.valueFrom.secretKeyRef.key"
       value = "host"
     },
 
     {
-      name  = "env.DB_USERNAME.valueFrom.secretKeyRef.name"
+      name  = "controllers.main.containers.main.env.DB_USERNAME.valueFrom.secretKeyRef.name"
       value = "immich-postgres-app"
     },
     {
-      name  = "env.DB_USERNAME.valueFrom.secretKeyRef.key"
+      name  = "controllers.main.containers.main.env.DB_USERNAME.valueFrom.secretKeyRef.key"
       value = "user"
     },
 
     {
-      name  = "env.DB_PASSWORD.valueFrom.secretKeyRef.name"
+      name  = "controllers.main.containers.main.env.DB_PASSWORD.valueFrom.secretKeyRef.name"
       value = "immich-postgres-app"
     },
     {
-      name  = "env.DB_PASSWORD.valueFrom.secretKeyRef.key"
+      name  = "controllers.main.containers.main.env.DB_PASSWORD.valueFrom.secretKeyRef.key"
       value = "password"
     },
 
     {
-      name  = "env.DB_DATABASE_NAME.valueFrom.secretKeyRef.name"
+      name  = "controllers.main.containers.main.env.DB_DATABASE_NAME.valueFrom.secretKeyRef.name"
       value = "immich-postgres-app"
     },
     {
-      name  = "env.DB_DATABASE_NAME.valueFrom.secretKeyRef.key"
+      name  = "controllers.main.containers.main.env.DB_DATABASE_NAME.valueFrom.secretKeyRef.key"
       value = "dbname"
     },
     {
       name  = "valkey.enabled"
       value = true
-    },
+    }
   ]
 
   depends_on = [kubernetes_manifest.immich_postgres]
@@ -182,3 +178,4 @@ resource "helm_release" "istio_config" {
 
   depends_on = [helm_release.immich]
 }
+

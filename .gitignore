@@ -1,5 +1,5 @@
-.*
 *.tfvars
+.terraform*
 *.env
 *.bak
 tmp/
