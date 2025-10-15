@@ -120,3 +120,8 @@ module "jellyfin" {
   nfs_share  = var.nfs_share
   base_url   = var.base_url_private
 }
+
+module "gitea" {
+  source = "./modules/gitea"
+  base_url = var.base_url_private
+}
