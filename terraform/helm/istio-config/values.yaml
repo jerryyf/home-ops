@@ -1,4 +1,27 @@
-hostname:
-path:
-dest:
-port:
+# VS + GW configuration
+ingress:
+  # Hostname that will be exposed by the Istio Gateway
+  hostname: app.example.com
+  # URI path prefix for HTTP routing (used in VirtualService)
+  path: /
+  # Destination service name (Kubernetes service) inside the cluster
+  dest: my-app-service.default.svc.cluster.local
+  # Destination port number of the service
+  port: 80
+
+# ServiceEntry configuration for adding external or internal services into the mesh
+serviceEntry:
+  # DNS name that the ServiceEntry will represent
+  hostname: example.com
+  # Determines whether the service is external to the mesh (MESH_EXTERNAL) or internal (MESH_INTERNAL)
+  location: MESH_EXTERNAL
+  # Ports that the service exposes
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  # Resolution strategy: NONE, STATIC, DNS, DNS_ROUND_ROBIN, etc. Determines how Istio finds the real IP of a host.
+  resolution: NONE
+  # List of explicit endpoints (IP or hostname) when using STATIC resolution. Each entry can include specific ports.
+  endpoints:
+  - address: external-service.com
