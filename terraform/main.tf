@@ -122,6 +122,6 @@ module "jellyfin" {
 }
 
 module "gitea" {
-  source = "./modules/gitea"
+  source   = "./modules/gitea"
   base_url = var.base_url_private
 }

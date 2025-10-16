@@ -1,9 +1,9 @@
 variable "nfs_server" {
-  type    = string
+  type = string
 }
 
 variable "nfs_share" {
-  type    = string
+  type = string
 }
 
 variable "base_url" {
@@ -11,6 +11,6 @@ variable "base_url" {
 }
 
 locals {
-  jellyfin_path = "${var.nfs_share}/library"
+  jellyfin_path   = "${var.nfs_share}/library"
   immich_hostname = "immich.${var.base_url}"
 }

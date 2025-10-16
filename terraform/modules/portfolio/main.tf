@@ -165,6 +165,6 @@ resource "helm_release" "istio_config" {
       value = 3000
     }
   ]
-  depends_on = [ kubernetes_service.portfolio ]
+  depends_on = [kubernetes_service.portfolio]
 }
 
