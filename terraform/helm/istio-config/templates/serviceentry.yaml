@@ -1,0 +1,22 @@
+{{- if .Values.serviceEntry.enabled }}
+apiVersion: networking.istio.io/v1
+kind: ServiceEntry
+metadata:
+  name: {{ .Release.Name }}-example-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - {{ .Values.serviceEntry.hostname }}
+  location: {{ .Values.serviceEntry.location }}
+  ports:
+{{- range .Values.serviceEntry.ports }}
+  - number: {{ .number }}
+    name: {{ .name }}
+    protocol: {{ .protocol }}
+{{- end }}
+  resolution: {{ .Values.serviceEntry.resolution }}
+  endpoints:
+{{- range .Values.serviceEntry.endpoints }}
+  - address: {{ .address }}
+{{- end }}
+{{- end }}
