@@ -25,5 +25,8 @@ jobs:
       - name: Terraform init
         run: terraform init -input=false -backend=false
 
+      - name: Terraform format
+        run: terraform fmt -check -recursive
+
       - name: Terraform validate
         run: terraform validate
