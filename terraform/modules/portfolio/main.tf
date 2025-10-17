@@ -155,7 +155,7 @@ resource "kubernetes_service" "portfolio" {
 
 resource "helm_release" "istio_config" {
   name      = "portfolio-ingress"
-  namespace = "istio-ingress"
+  namespace = "istio-config"
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [
@@ -169,7 +169,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "portfolio.portfolio-prod.svc.cluster.local"
+      value = "portfolio.portfolio.svc.cluster.local"
     },
     {
       name  = "port"

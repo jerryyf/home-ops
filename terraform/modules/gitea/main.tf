@@ -39,7 +39,7 @@ resource "helm_release" "gitea" {
 
 resource "helm_release" "istio_config" {
   name      = "gitea-ingress"
-  namespace = "istio-ingress"
+  namespace = "istio-config"
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [

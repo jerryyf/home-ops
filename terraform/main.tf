@@ -62,6 +62,12 @@ module "cert_manager" {
   source = "./modules/cert_manager"
 }
 
+resource "kubernetes_namespace_v1" "istio_config" {
+  metadata {
+    name = "istio-config"
+  }
+}
+
 module "istio" {
   source = "./modules/istio"
 
