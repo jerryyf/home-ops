@@ -38,16 +38,6 @@ provider "helm" {
 }
 
 
-resource "helm_release" "cnpg" {
-  name             = "cnpg"
-  repository       = "cloudnative-pg"
-  chart            = "cloudnative-pg"
-  namespace        = "cnpg-system"
-  version          = "0.23.2"
-  atomic           = true
-  create_namespace = true
-}
-
 resource "helm_release" "csi_driver_nfs" {
   name             = "csi-driver-nfs"
   repository       = "csi-driver-nfs"
@@ -56,35 +46,6 @@ resource "helm_release" "csi_driver_nfs" {
   version          = "4.11.0"
   atomic           = true
   create_namespace = true
-}
-
-module "cert_manager" {
-  source = "./modules/cert_manager"
-}
-
-resource "kubernetes_namespace_v1" "istio_config" {
-  metadata {
-    name = "istio-config"
-  }
-}
-
-module "istio" {
-  source = "./modules/istio"
-
-  depends_on = [module.cert_manager.helm_release]
-}
-
-module "portfolio" {
-  source                       = "./modules/portfolio"
-  aws_region_lambda            = var.aws_region_lambda
-  aws_access_key_id_lambda     = var.aws_access_key_id_lambda
-  aws_secret_access_key_lambda = var.aws_secret_access_key_lambda
-  aws_lambda_function_name     = var.aws_lambda_function_name
-  bot_token                    = var.bot_token
-  chat_id                      = var.chat_id
-  base_url                     = var.base_url_portfolio
-
-  depends_on = [module.cert_manager.helm_release]
 }
 
 resource "kubernetes_storage_class" "nfs_csi" {
@@ -128,25 +89,61 @@ resource "kubernetes_storage_class" "nfs_csi_encrypted" {
   depends_on = [helm_release.csi_driver_nfs]
 }
 
+resource "helm_release" "cnpg" {
+  name             = "cnpg"
+  repository       = "cloudnative-pg"
+  chart            = "cloudnative-pg"
+  namespace        = "cnpg-system"
+  version          = "0.23.2"
+  atomic           = true
+  create_namespace = true
+}
+
+module "cert_manager" {
+  source = "./modules/cert_manager"
+}
+
+module "istio" {
+  source = "./modules/istio"
+
+  depends_on = [module.cert_manager.helm_release]
+}
+
+module "portfolio" {
+  source                       = "./modules/portfolio"
+  aws_region_lambda            = var.aws_region_lambda
+  aws_access_key_id_lambda     = var.aws_access_key_id_lambda
+  aws_secret_access_key_lambda = var.aws_secret_access_key_lambda
+  aws_lambda_function_name     = var.aws_lambda_function_name
+  bot_token                    = var.bot_token
+  chat_id                      = var.chat_id
+  base_url                     = var.base_url_portfolio
+
+  depends_on = [module.istio.helm_release]
+}
+
 module "immich" {
   source     = "./modules/immich"
   nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
+  nfs_share  = var.nfs_share_encrypted
   base_url   = var.base_url_private
+  depends_on = [module.istio.helm_release]
 }
-
-# module "open_webui" {
-#   source = "./modules/open_webui" 
-# }
 
 module "jellyfin" {
   source     = "./modules/jellyfin"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
   base_url   = var.base_url_public
+  depends_on = [module.istio.helm_release]
 }
 
 module "gitea" {
   source   = "./modules/gitea"
   base_url = var.base_url_private
+  depends_on = [module.istio.helm_release]
 }
+
+# module "open_webui" {
+#   source = "./modules/open_webui" 
+# }

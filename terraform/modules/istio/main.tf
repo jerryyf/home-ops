@@ -11,6 +11,12 @@ terraform {
   }
 }
 
+resource "kubernetes_namespace_v1" "istio_config" {
+  metadata {
+    name = "istio-config"
+  }
+}
+
 resource "helm_release" "istio_base" {
   name             = "istio-base"
   repository       = "istio"
