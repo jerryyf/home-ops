@@ -1,5 +1,5 @@
 variable "nfs_server" {
-  type      = string
+  type = string
 }
 
 variable "nfs_share" {

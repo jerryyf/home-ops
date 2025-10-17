@@ -1,5 +1,5 @@
 variable "aws_region" {
-  type      = string
+  type = string
 }
 
 variable "aws_access_key_id" {
@@ -13,7 +13,7 @@ variable "aws_secret_access_key" {
 }
 
 variable "aws_region_lambda" {
-  type      = string
+  type = string
 }
 
 variable "aws_access_key_id_lambda" {
@@ -27,7 +27,7 @@ variable "aws_secret_access_key_lambda" {
 }
 
 variable "aws_lambda_function_name" {
-  type      = string
+  type = string
 }
 
 variable "bot_token" {
@@ -41,7 +41,7 @@ variable "chat_id" {
 }
 
 variable "nfs_server" {
-  type      = string
+  type = string
 }
 
 variable "nfs_share" {
@@ -58,11 +58,11 @@ variable "base_url_private" {
 }
 
 variable "base_url_public" {
-  type      = string
+  type = string
 }
 
 variable "base_url_portfolio" {
-  type      = string
+  type = string
 }
 
 output "aws_access_key_id_lambda" {
@@ -96,15 +96,15 @@ output "chat_id" {
 }
 
 output "nfs_server" {
-  value     = var.nfs_server
+  value = var.nfs_server
 }
 
 output "nfs_share" {
-  value     = var.nfs_share
+  value = var.nfs_share
 }
 
 output "nfs_share_encrypted" {
-  value     = var.nfs_share
+  value = var.nfs_share
 }
 
 output "base_url_private" {
@@ -113,9 +113,9 @@ output "base_url_private" {
 }
 
 output "base_url_public" {
-  value     = var.base_url_public
+  value = var.base_url_public
 }
 
 output "base_url_portfolio" {
-  value     = var.base_url_portfolio
+  value = var.base_url_portfolio
 }

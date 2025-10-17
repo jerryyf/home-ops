@@ -71,7 +71,7 @@ resource "kubernetes_namespace_v1" "istio_config" {
 module "istio" {
   source = "./modules/istio"
 
-  depends_on = [ module.cert_manager.helm_release ]
+  depends_on = [module.cert_manager.helm_release]
 }
 
 module "portfolio" {
@@ -91,7 +91,7 @@ resource "kubernetes_storage_class" "nfs_csi" {
   metadata {
     name = "nfs-csi"
     annotations = {
-      "storageclass.kubernetes.io/is-default-class": true
+      "storageclass.kubernetes.io/is-default-class" : true
     }
   }
   storage_provisioner = "nfs.csi.k8s.io"
@@ -106,7 +106,7 @@ resource "kubernetes_storage_class" "nfs_csi" {
     "nfsvers=4.1"
   ]
 
-  depends_on = [ helm_release.csi_driver_nfs ]
+  depends_on = [helm_release.csi_driver_nfs]
 }
 
 resource "kubernetes_storage_class" "nfs_csi_encrypted" {
@@ -125,7 +125,7 @@ resource "kubernetes_storage_class" "nfs_csi_encrypted" {
     "nfsvers=4.1"
   ]
 
-  depends_on = [ helm_release.csi_driver_nfs ]
+  depends_on = [helm_release.csi_driver_nfs]
 }
 
 module "immich" {

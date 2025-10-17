@@ -17,12 +17,12 @@ resource "kubernetes_namespace_v1" "open_webui" {
 }
 
 resource "helm_release" "open_webui" {
-  name       = "open-webui"
-  repository = "https://helm.openwebui.com/"
-  chart      = "open-webui"
-  namespace  = "open-webui"
-  version    = "8.8.0"
-  atomic     = true
+  name            = "open-webui"
+  repository      = "https://helm.openwebui.com/"
+  chart           = "open-webui"
+  namespace       = "open-webui"
+  version         = "8.8.0"
+  atomic          = true
   cleanup_on_fail = true
   set = [
     {
