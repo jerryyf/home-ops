@@ -1,6 +1,5 @@
 variable "nfs_server" {
   type      = string
-  sensitive = true
 }
 
 variable "nfs_share" {

@@ -11,6 +11,7 @@ ingress:
 
 # ServiceEntry configuration for adding external or internal services into the mesh
 serviceEntry:
+  enabled: false
   # DNS name that the ServiceEntry will represent
   hostname: example.com
   # Determines whether the service is external to the mesh (MESH_EXTERNAL) or internal (MESH_INTERNAL)
