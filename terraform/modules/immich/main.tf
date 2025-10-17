@@ -13,7 +13,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
   }
 
   spec {
-    storage_class_name = "nfs-csi"
+    storage_class_name = "nfs-csi-encrypted"
 
     claim_ref {
       name      = "immich-pvc"
@@ -51,7 +51,7 @@ resource "kubernetes_persistent_volume_claim" "immich_pvc" {
   spec {
     volume_name        = "immich-pv"
     access_modes       = ["ReadWriteMany"]
-    storage_class_name = "nfs-csi"
+    storage_class_name = "nfs-csi-encrypted"
     resources {
       requests = {
         storage = "512Gi"
