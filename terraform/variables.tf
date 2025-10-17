@@ -52,6 +52,10 @@ variable "nfs_share" {
   type = string
 }
 
+variable "nfs_share_encrypted" {
+  type = string
+}
+
 variable "base_url_private" {
   type      = string
   sensitive = true
@@ -103,6 +107,11 @@ output "nfs_server" {
 }
 
 output "nfs_share" {
+  value     = var.nfs_share
+  sensitive = true
+}
+
+output "nfs_share_encrypted" {
   value     = var.nfs_share
   sensitive = true
 }

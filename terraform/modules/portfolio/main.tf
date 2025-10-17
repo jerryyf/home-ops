@@ -11,10 +11,19 @@ terraform {
   }
 }
 
+resource "kubernetes_namespace_v1" "portfolio" {
+  metadata {
+    name = "portfolio"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}
+
 resource "kubernetes_secret_v1" "webhook_aws_env" {
   metadata {
     name      = "webhook-aws-env"
-    namespace = "portfolio-prod"
+    namespace = "portfolio"
   }
   data = {
     "AWS_REGION"               = var.aws_region_lambda
@@ -22,23 +31,25 @@ resource "kubernetes_secret_v1" "webhook_aws_env" {
     "AWS_SECRET_ACCESS_KEY"    = var.aws_secret_access_key_lambda
     "AWS_LAMBDA_FUNCTION_NAME" = var.aws_lambda_function_name
   }
+  depends_on = [kubernetes_namespace_v1.portfolio]
 }
 
 resource "kubernetes_secret_v1" "webhook_telegram_env" {
   metadata {
     name      = "webhook-telegram-env"
-    namespace = "portfolio-prod"
+    namespace = "portfolio"
   }
   data = {
     "BOT_TOKEN" = var.bot_token
     "CHAT_ID"   = var.chat_id
   }
+  depends_on = [kubernetes_secret_v1.webhook_aws_env]
 }
 
 resource "kubernetes_deployment_v1" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio-prod"
+    namespace = "portfolio"
   }
   spec {
     replicas = 1
@@ -126,7 +137,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
 resource "kubernetes_service" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio-prod"
+    namespace = "portfolio"
   }
   spec {
     selector = {

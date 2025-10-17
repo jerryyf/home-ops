@@ -37,14 +37,6 @@ provider "helm" {
   }
 }
 
-resource "kubernetes_namespace_v1" "portfolio_prod" {
-  metadata {
-    name = "portfolio-prod"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
-}
 
 resource "helm_release" "cnpg" {
   name             = "cnpg"
@@ -69,8 +61,11 @@ resource "helm_release" "csi_driver_nfs" {
 module "cert_manager" {
   source = "./modules/cert_manager"
 }
+
 module "istio" {
   source = "./modules/istio"
+
+  depends_on = [ module.cert_manager.helm_release ]
 }
 
 module "portfolio" {
@@ -89,6 +84,9 @@ module "portfolio" {
 resource "kubernetes_storage_class" "nfs_csi" {
   metadata {
     name = "nfs-csi"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class": true
+    }
   }
   storage_provisioner = "nfs.csi.k8s.io"
   parameters = {
@@ -101,6 +99,27 @@ resource "kubernetes_storage_class" "nfs_csi" {
   mount_options = [
     "nfsvers=4.1"
   ]
+
+  depends_on = [ helm_release.csi_driver_nfs ]
+}
+
+resource "kubernetes_storage_class" "nfs_csi_encrypted" {
+  metadata {
+    name = "nfs-csi-encrypted"
+  }
+  storage_provisioner = "nfs.csi.k8s.io"
+  parameters = {
+    server = var.nfs_server
+    share  = var.nfs_share_encrypted
+  }
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "Immediate"
+  allow_volume_expansion = true
+  mount_options = [
+    "nfsvers=4.1"
+  ]
+
+  depends_on = [ helm_release.csi_driver_nfs ]
 }
 
 module "immich" {
@@ -118,7 +137,7 @@ module "jellyfin" {
   source     = "./modules/jellyfin"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
+  base_url   = var.base_url_public
 }
 
 module "gitea" {

@@ -7,12 +7,6 @@ terraform {
   }
 }
 
-provider "helm" {
-  kubernetes = {
-    config_path = "~/.kube/config"
-  }
-}
-
 resource "kubernetes_namespace_v1" "open_webui" {
   metadata {
     name = "open-webui"
@@ -20,7 +14,6 @@ resource "kubernetes_namespace_v1" "open_webui" {
       "istio-injection" = "enabled"
     }
   }
-
 }
 
 resource "helm_release" "open_webui" {
@@ -30,6 +23,7 @@ resource "helm_release" "open_webui" {
   namespace  = "open-webui"
   version    = "8.8.0"
   atomic     = true
+  cleanup_on_fail = true
   set = [
     {
       name  = "resources.requests.cpu"
