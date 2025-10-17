@@ -1,13 +1,17 @@
-# VS + GW configuration
-ingress:
-  # Hostname that will be exposed by the Istio Gateway
-  hostname: app.example.com
-  # URI path prefix for HTTP routing (used in VirtualService)
-  path: /
-  # Destination service name (Kubernetes service) inside the cluster
-  dest: my-app-service.default.svc.cluster.local
-  # Destination port number of the service
-  port: 80
+# Hostname that will be exposed by the Istio Gateway
+hostname:
+# URI path prefix for HTTP routing (used in VirtualService)
+path:
+# Destination service name (Kubernetes service) inside the cluster
+dest:
+# Destination port number of the service
+port:
+
+# Additional TCP routes
+# tcp:
+#   name:
+#   dest:
+#   port:
 
 # ServiceEntry configuration for adding external or internal services into the mesh
 serviceEntry:
