@@ -134,7 +134,7 @@ module "jellyfin" {
   source     = "./modules/jellyfin"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
-  base_url   = var.base_url_public
+  base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }
 
@@ -144,6 +144,3 @@ module "gitea" {
   depends_on = [module.istio.helm_release]
 }
 
-# module "open_webui" {
-#   source = "./modules/open_webui" 
-# }
