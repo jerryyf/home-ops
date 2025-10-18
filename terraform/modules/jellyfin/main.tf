@@ -66,10 +66,10 @@ resource "kubernetes_persistent_volume_claim" "jellyfin_pvc" {
 }
 
 resource "helm_release" "jellyfin" {
-  name       = "jellyfin"
-  chart      = "jellyfin/jellyfin"
-  namespace  = "jellyfin"
-  atomic     = true
+  name             = "jellyfin"
+  chart            = "jellyfin/jellyfin"
+  namespace        = "jellyfin"
+  atomic           = true
   create_namespace = true
   set = [
     {
@@ -86,7 +86,7 @@ resource "helm_release" "jellyfin" {
     }
   ]
 
-  depends_on = [ kubernetes_persistent_volume.jellyfin_pv, kubernetes_persistent_volume_claim.jellyfin_pvc ]
+  depends_on = [kubernetes_persistent_volume.jellyfin_pv, kubernetes_persistent_volume_claim.jellyfin_pvc]
 }
 
 resource "helm_release" "istio_config" {

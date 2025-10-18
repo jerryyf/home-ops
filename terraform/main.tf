@@ -139,8 +139,8 @@ module "jellyfin" {
 }
 
 module "gitea" {
-  source   = "./modules/gitea"
-  base_url = var.base_url_private
+  source     = "./modules/gitea"
+  base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }
 

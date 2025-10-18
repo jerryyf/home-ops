@@ -11,6 +11,6 @@ variable "base_url" {
 }
 
 locals {
-  jellyfin_path   = "${var.nfs_share}/library"
+  jellyfin_path     = "${var.nfs_share}/library"
   jellyfin_hostname = "jellyfin.${var.base_url}"
 }
