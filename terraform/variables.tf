@@ -104,7 +104,7 @@ output "nfs_share" {
 }
 
 output "nfs_share_encrypted" {
-  value = var.nfs_share
+  value = var.nfs_share_encrypted
 }
 
 output "base_url_private" {

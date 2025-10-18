@@ -73,6 +73,10 @@ resource "helm_release" "jellyfin" {
   create_namespace = true
   set = [
     {
+      name  = "persistence.config.storageClass"
+      value = "nfs-csi"
+    },
+    {
       name  = "persistence.media.storageClass"
       value = "nfs-csi"
     },
