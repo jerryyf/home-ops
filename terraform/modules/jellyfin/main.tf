@@ -1,27 +1,14 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.38.0"
-    }
-  }
-}
-
-resource "kubernetes_persistent_volume" "jellyfin_pv" {
+resource "kubernetes_persistent_volume" "jellyfin_media_pv" {
   metadata {
-    name = "jellyfin-pv"
+    name = "jellyfin-media-pv"
   }
 
   spec {
     storage_class_name = "nfs-csi"
 
     claim_ref {
-      name      = "jellyfin-pvc"
-      namespace = "jellyfin"
+      name      = "jellyfin-media-pvc"
+      namespace = "staging"
     }
 
     persistent_volume_source {
@@ -30,7 +17,7 @@ resource "kubernetes_persistent_volume" "jellyfin_pv" {
         read_only = false
         volume_attributes = {
           "server" = var.nfs_server
-          "share"  = local.jellyfin_path
+          "share"  = local.media_path
         }
         volume_handle = "truenas/library"
       }
@@ -41,18 +28,18 @@ resource "kubernetes_persistent_volume" "jellyfin_pv" {
 
     access_modes                     = ["ReadWriteMany"]
     mount_options                    = ["nfsvers=4.1"]
-    persistent_volume_reclaim_policy = "Retain"
+    persistent_volume_reclaim_policy = "Delete"
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "jellyfin_pvc" {
+resource "kubernetes_persistent_volume_claim" "jellyfin_media_pvc" {
   metadata {
-    name      = "jellyfin-pvc"
-    namespace = "jellyfin"
+    name      = "jellyfin-media-pvc"
+    namespace = "staging"
   }
 
   spec {
-    volume_name        = "jellyfin-pv"
+    volume_name        = "jellyfin-media-pvc"
     access_modes       = ["ReadWriteMany"]
     storage_class_name = "nfs-csi"
     resources {
@@ -61,14 +48,68 @@ resource "kubernetes_persistent_volume_claim" "jellyfin_pvc" {
       }
     }
   }
+  depends_on = [kubernetes_persistent_volume.jellyfin_media_pv]
+}
 
-  depends_on = [kubernetes_persistent_volume.jellyfin_pv]
+resource "kubernetes_persistent_volume" "jellyfin_config_pv" {
+  metadata {
+    name = "jellyfin-config-pv"
+  }
+
+  spec {
+    storage_class_name = "nfs-csi"
+
+    claim_ref {
+      name      = "jellyfin-config-pvc"
+      namespace = "staging"
+    }
+
+    persistent_volume_source {
+      csi {
+        driver    = "nfs.csi.k8s.io"
+        read_only = false
+        volume_attributes = {
+          "server" = var.nfs_server
+          "share"  = local.jellyfin_path
+        }
+        volume_handle = "truenas/jellyfin"
+      }
+    }
+    capacity = {
+      storage = "5Gi"
+    }
+
+    access_modes                     = ["ReadWriteMany"]
+    mount_options                    = ["nfsvers=4.1"]
+    persistent_volume_reclaim_policy = "Delete"
+  }
+  depends_on = [kubernetes_persistent_volume_claim.jellyfin_media_pvc]
+}
+
+resource "kubernetes_persistent_volume_claim" "jellyfin_config_pvc" {
+  metadata {
+    name      = "jellyfin-config-pvc"
+    namespace = "staging"
+  }
+
+  spec {
+    volume_name        = "jellyfin-config-pv"
+    access_modes       = ["ReadWriteMany"]
+    storage_class_name = "nfs-csi"
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
+  }
+
+  depends_on = [kubernetes_persistent_volume.jellyfin_config_pv]
 }
 
 resource "helm_release" "jellyfin" {
   name             = "jellyfin"
   chart            = "jellyfin/jellyfin"
-  namespace        = "jellyfin"
+  namespace        = "staging"
   atomic           = true
   create_namespace = true
   set = [
@@ -77,16 +118,20 @@ resource "helm_release" "jellyfin" {
       value = "nfs-csi"
     },
     {
+      name  = "persistence.config.existingClaim"
+      value = "jellyfin-config-pvc"
+    },
+    {
       name  = "persistence.media.storageClass"
       value = "nfs-csi"
     },
     {
       name  = "persistence.media.existingClaim"
-      value = "jellyfin-pvc"
+      value = "jellyfin-media-pvc"
     }
   ]
 
-  depends_on = [kubernetes_persistent_volume.jellyfin_pv, kubernetes_persistent_volume_claim.jellyfin_pvc]
+  depends_on = [kubernetes_persistent_volume_claim.jellyfin_config_pvc]
 }
 
 resource "helm_release" "istio_config" {
@@ -101,7 +146,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "path"
-      value = "/"
+      value = "/jellyfin"
     },
     {
       name  = "dest"
@@ -115,4 +160,3 @@ resource "helm_release" "istio_config" {
 
   depends_on = [helm_release.jellyfin]
 }
-

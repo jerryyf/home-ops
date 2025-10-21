@@ -1,26 +1,8 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
-    }
-  }
-}
-
-resource "kubernetes_namespace_v1" "open_webui" {
-  metadata {
-    name = "open-webui"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
-}
-
 resource "helm_release" "open_webui" {
   name            = "open-webui"
   repository      = "https://helm.openwebui.com/"
   chart           = "open-webui"
-  namespace       = "open-webui"
+  namespace       = "staging"
   version         = "8.8.0"
   atomic          = true
   cleanup_on_fail = true
@@ -49,5 +31,44 @@ resource "helm_release" "open_webui" {
       name  = "pipelines.enabled"
       value = false
     },
+    {
+      name  = "pipelines.enabled"
+      value = false
+    },
   ]
+}
+
+resource "helm_release" "istio_config" {
+  name      = "open-webui-ingress"
+  namespace = "istio-config"
+  chart     = "${path.root}/helm/istio-config"
+  atomic    = true
+  set = [
+    {
+      name  = "certificate.create"
+      value = true
+    },
+    {
+      name  = "certificate.issuer"
+      value = "cloudflare"
+    },
+    {
+      name  = "hostname"
+      value = "staging.${var.base_url}"
+    },
+    {
+      name  = "path"
+      value = "/chat"
+    },
+    {
+      name  = "dest"
+      value = "open-webui.staging.svc.cluster.local"
+    },
+    {
+      name  = "port"
+      value = 80
+    }
+  ]
+
+  depends_on = [helm_release.open_webui]
 }

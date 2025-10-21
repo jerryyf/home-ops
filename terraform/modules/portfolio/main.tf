@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.38.0"
-    }
-  }
-}
-
 resource "kubernetes_namespace_v1" "portfolio" {
   metadata {
     name = "portfolio"
@@ -159,6 +146,14 @@ resource "helm_release" "istio_config" {
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [
+    {
+      name  = "certificate.create"
+      value = true
+    },
+    {
+      name  = "certificate.issuer"
+      value = "cloudflare"
+    },
     {
       name  = "hostname"
       value = var.base_url

@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
-    }
-  }
-}
-
 resource "kubernetes_persistent_volume" "immich_pv" {
   metadata {
     name = "immich-pv"
@@ -38,7 +29,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
 
     access_modes                     = ["ReadWriteMany"]
     mount_options                    = ["nfsvers=4.1"]
-    persistent_volume_reclaim_policy = "Retain"
+    persistent_volume_reclaim_policy = "Delete"
   }
 }
 

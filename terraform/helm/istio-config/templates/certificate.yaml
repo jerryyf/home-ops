@@ -1,19 +1,22 @@
+{{- if .Values.certificate.create }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ .Release.Name }}-tls
   namespace: istio-ingress
 spec:
-  # The secret name where cert-manager should store the signed certificate
   secretName: {{ .Release.Name }}-tls
+  commonName: {{ .Values.hostname }}
   dnsNames:
     - {{ .Values.hostname }}
-  # Duration of the certificate
   duration: 168h
-  # Renew a day before the certificate expiration
   renewBefore: 24h
-  # Reference the Origin CA Issuer you created above, which must be in the same namespace.
   issuerRef:
+    {{- if eq .Values.certificate.issuer "cloudflare" }}
     group: cert-manager.k8s.cloudflare.com
     kind: OriginIssuer
     name: prod-issuer
+    {{- else }}
+    name: {{ .Values.certificate.issuer }}
+    {{- end }}
+{{- end }}

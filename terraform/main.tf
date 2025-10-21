@@ -37,6 +37,23 @@ provider "helm" {
   }
 }
 
+resource "kubernetes_namespace_v1" "staging" {
+  metadata {
+    name = "staging"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}
+
+resource "kubernetes_namespace_v1" "prod" {
+  metadata {
+    name = "prod"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}
 
 resource "helm_release" "csi_driver_nfs" {
   name             = "csi-driver-nfs"
@@ -51,9 +68,6 @@ resource "helm_release" "csi_driver_nfs" {
 resource "kubernetes_storage_class" "nfs_csi" {
   metadata {
     name = "nfs-csi"
-    annotations = {
-      "storageclass.kubernetes.io/is-default-class" : true
-    }
   }
   storage_provisioner = "nfs.csi.k8s.io"
   parameters = {
@@ -109,6 +123,7 @@ module "istio" {
   depends_on = [module.cert_manager.helm_release]
 }
 
+# public ingress cloudflare proxy
 module "portfolio" {
   source                       = "./modules/portfolio"
   aws_region_lambda            = var.aws_region_lambda
@@ -130,17 +145,27 @@ module "immich" {
   depends_on = [module.istio.helm_release]
 }
 
-module "jellyfin" {
-  source     = "./modules/jellyfin"
-  nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
+# public ingress letsencrypt staging
+# TODO setup reverse proxy AWS
+# module "jellyfin" {
+#   source     = "./modules/jellyfin"
+#   nfs_server = var.nfs_server
+#   nfs_share  = var.nfs_share
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
 
 module "gitea" {
   source     = "./modules/gitea"
+  nfs_server = var.nfs_server
+  nfs_share  = var.nfs_share_encrypted
   base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }
 
+# public ingress cloudflare proxy
+module "open_webui" {
+  source     = "./modules/open_webui"
+  base_url   = var.base_url_public
+  depends_on = [module.istio.helm_release]
+}
