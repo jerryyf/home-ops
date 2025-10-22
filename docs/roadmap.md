@@ -4,5 +4,5 @@
 - [ ] Argo CD
 - [x] Secret management
 - [ ] DNS automation
-- [ ] VM and VXLAN Terraform
+- [ ] VLAN automation
 - [ ] Kiali observability

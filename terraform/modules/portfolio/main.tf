@@ -1,16 +1,7 @@
-resource "kubernetes_namespace_v1" "portfolio" {
-  metadata {
-    name = "portfolio"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
-}
-
 resource "kubernetes_secret_v1" "webhook_aws_env" {
   metadata {
     name      = "webhook-aws-env"
-    namespace = "portfolio"
+    namespace = var.env
   }
   data = {
     "AWS_REGION"               = var.aws_region_lambda
@@ -18,13 +9,12 @@ resource "kubernetes_secret_v1" "webhook_aws_env" {
     "AWS_SECRET_ACCESS_KEY"    = var.aws_secret_access_key_lambda
     "AWS_LAMBDA_FUNCTION_NAME" = var.aws_lambda_function_name
   }
-  depends_on = [kubernetes_namespace_v1.portfolio]
 }
 
 resource "kubernetes_secret_v1" "webhook_telegram_env" {
   metadata {
     name      = "webhook-telegram-env"
-    namespace = "portfolio"
+    namespace = var.env
   }
   data = {
     "BOT_TOKEN" = var.bot_token
@@ -36,7 +26,7 @@ resource "kubernetes_secret_v1" "webhook_telegram_env" {
 resource "kubernetes_deployment_v1" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio"
+    namespace = var.env
   }
   spec {
     replicas = 1
@@ -106,6 +96,15 @@ resource "kubernetes_deployment_v1" "portfolio" {
             }
           }
           env {
+            name = "AWS_SECRET_ACCESS_KEY"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.webhook_aws_env.metadata[0].name
+                key  = "AWS_SECRET_ACCESS_KEY"
+              }
+            }
+          }
+          env {
             name = "AWS_LAMBDA_FUNCTION_NAME"
             value_from {
               secret_key_ref {
@@ -124,7 +123,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
 resource "kubernetes_service" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio"
+    namespace = var.env
   }
   spec {
     selector = {
@@ -164,7 +163,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "portfolio.portfolio.svc.cluster.local"
+      value = "portfolio.${var.env}.svc.cluster.local"
     },
     {
       name  = "port"
