@@ -21,5 +21,6 @@ In the terraform directory:
 
 1. Create `backend.tfvars` to set region, bucket, and key
 2. Create `terraform.tfvars` for all required variables
+2. Create `backend.tfvars` for backend configuration
 3. Initialize backend with `terraform init -backend-config="./backend.tfvars"`
 4. Apply with `terraform apply`
