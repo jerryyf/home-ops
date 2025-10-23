@@ -84,25 +84,6 @@ resource "kubernetes_storage_class" "nfs_csi" {
   depends_on = [helm_release.csi_driver_nfs]
 }
 
-resource "kubernetes_storage_class" "nfs_csi_encrypted" {
-  metadata {
-    name = "nfs-csi-encrypted"
-  }
-  storage_provisioner = "nfs.csi.k8s.io"
-  parameters = {
-    server = var.nfs_server
-    share  = var.nfs_share_encrypted
-  }
-  reclaim_policy         = "Delete"
-  volume_binding_mode    = "Immediate"
-  allow_volume_expansion = true
-  mount_options = [
-    "nfsvers=4.1"
-  ]
-
-  depends_on = [helm_release.csi_driver_nfs]
-}
-
 resource "helm_release" "cnpg" {
   name             = "cnpg"
   repository       = "cloudnative-pg"
@@ -140,7 +121,7 @@ module "portfolio" {
 module "immich" {
   source     = "./modules/immich"
   nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share_encrypted
+  nfs_share  = var.nfs_share
   base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }
@@ -158,7 +139,7 @@ module "immich" {
 module "gitea" {
   source     = "./modules/gitea"
   nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share_encrypted
+  nfs_share  = var.nfs_share
   base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }

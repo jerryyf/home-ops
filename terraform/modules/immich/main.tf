@@ -4,7 +4,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
   }
 
   spec {
-    storage_class_name = "nfs-csi-encrypted"
+    storage_class_name = "nfs-csi"
 
     claim_ref {
       name      = "immich-pvc"
@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
           "server" = var.nfs_server
           "share"  = local.immich_path
         }
-        volume_handle = "truenas/immich"
+        volume_handle = "kubernetes/immich"
       }
     }
 
@@ -42,7 +42,7 @@ resource "kubernetes_persistent_volume_claim" "immich_pvc" {
   spec {
     volume_name        = "immich-pv"
     access_modes       = ["ReadWriteMany"]
-    storage_class_name = "nfs-csi-encrypted"
+    storage_class_name = "nfs-csi"
     resources {
       requests = {
         storage = "512Gi"

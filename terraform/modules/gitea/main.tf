@@ -5,7 +5,7 @@ resource "kubernetes_persistent_volume" "gitea_pv" {
   }
 
   spec {
-    storage_class_name = "nfs-csi-encrypted"
+    storage_class_name = "nfs-csi"
 
     claim_ref {
       name      = "gitea-pvc"
@@ -20,7 +20,7 @@ resource "kubernetes_persistent_volume" "gitea_pv" {
           "server" = var.nfs_server
           "share"  = local.nfs_path
         }
-        volume_handle = "truenas/gitea"
+        volume_handle = "kubernetes/gitea"
       }
     }
 
@@ -43,7 +43,7 @@ resource "kubernetes_persistent_volume_claim" "gitea_pvc" {
   spec {
     volume_name        = "gitea-pv"
     access_modes       = ["ReadWriteMany"]
-    storage_class_name = "nfs-csi-encrypted"
+    storage_class_name = "nfs-csi"
     resources {
       requests = {
         storage = "256Gi"
@@ -74,7 +74,7 @@ resource "helm_release" "gitea" {
     },
     {
       name  = "persistence.storageClass"
-      value = "nfs-csi-encrypted"
+      value = "nfs-csi"
     },
     {
       name  = "persistence.create"

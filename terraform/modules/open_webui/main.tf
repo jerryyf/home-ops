@@ -35,6 +35,10 @@ resource "helm_release" "open_webui" {
       name  = "pipelines.enabled"
       value = false
     },
+    {
+      name  = "persistence.storageClass"
+      value = "nfs-csi"
+    },
   ]
 }
 
