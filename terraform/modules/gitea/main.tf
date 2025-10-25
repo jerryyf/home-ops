@@ -1,4 +1,3 @@
-
 resource "kubernetes_persistent_volume" "gitea_pv" {
   metadata {
     name = "gitea-pv"
@@ -9,7 +8,7 @@ resource "kubernetes_persistent_volume" "gitea_pv" {
 
     claim_ref {
       name      = "gitea-pvc"
-      namespace = "staging"
+      namespace = var.namespace
     }
 
     persistent_volume_source {
@@ -37,7 +36,7 @@ resource "kubernetes_persistent_volume" "gitea_pv" {
 resource "kubernetes_persistent_volume_claim" "gitea_pvc" {
   metadata {
     name      = "gitea-pvc"
-    namespace = "staging"
+    namespace = var.namespace
   }
 
   spec {
@@ -59,7 +58,7 @@ resource "helm_release" "gitea" {
   repository      = local.repository
   chart           = "gitea"
   version         = local.gitea_version
-  namespace       = "staging"
+  namespace       = var.namespace
   atomic          = true
   cleanup_on_fail = true
 
@@ -113,7 +112,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "gitea-http.staging.svc.cluster.local"
+      value = "gitea-http.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"

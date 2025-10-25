@@ -37,6 +37,17 @@ provider "helm" {
   }
 }
 
+# internal
+resource "kubernetes_namespace_v1" "dev" {
+  metadata {
+    name = "dev"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}
+
+# public
 resource "kubernetes_namespace_v1" "staging" {
   metadata {
     name = "staging"
@@ -46,6 +57,7 @@ resource "kubernetes_namespace_v1" "staging" {
   }
 }
 
+# public
 resource "kubernetes_namespace_v1" "prod" {
   metadata {
     name = "prod"
@@ -120,6 +132,7 @@ module "portfolio" {
 
 module "immich" {
   source     = "./modules/immich"
+  namespace = "dev"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
   base_url   = var.base_url_private
@@ -138,6 +151,7 @@ module "immich" {
 
 module "gitea" {
   source     = "./modules/gitea"
+  namespace  = "dev"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
   base_url   = var.base_url_private

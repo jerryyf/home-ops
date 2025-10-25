@@ -1,3 +1,7 @@
+variable "namespace" {
+  type = string
+}
+
 variable "nfs_server" {
   type = string
 }

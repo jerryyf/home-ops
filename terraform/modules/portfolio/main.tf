@@ -1,7 +1,7 @@
 resource "kubernetes_secret_v1" "webhook_aws_env" {
   metadata {
     name      = "webhook-aws-env"
-    namespace = var.env
+    namespace = var.namespace
   }
   data = {
     "AWS_REGION"               = var.aws_region_lambda
@@ -14,7 +14,7 @@ resource "kubernetes_secret_v1" "webhook_aws_env" {
 resource "kubernetes_secret_v1" "webhook_telegram_env" {
   metadata {
     name      = "webhook-telegram-env"
-    namespace = var.env
+    namespace = var.namespace
   }
   data = {
     "BOT_TOKEN" = var.bot_token
@@ -26,7 +26,7 @@ resource "kubernetes_secret_v1" "webhook_telegram_env" {
 resource "kubernetes_deployment_v1" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = var.env
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -123,7 +123,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
 resource "kubernetes_service" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = var.env
+    namespace = var.namespace
   }
   spec {
     selector = {
@@ -163,7 +163,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "portfolio.${var.env}.svc.cluster.local"
+      value = "portfolio.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"

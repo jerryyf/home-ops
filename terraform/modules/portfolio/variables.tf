@@ -26,7 +26,7 @@ variable "base_url" {
   type = string
 }
 
-variable "env" {
+variable "namespace" {
   type    = string
   default = "prod"
 }

@@ -8,7 +8,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
 
     claim_ref {
       name      = "immich-pvc"
-      namespace = "immich"
+      namespace = var.namespace
     }
 
     persistent_volume_source {
@@ -36,7 +36,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
 resource "kubernetes_persistent_volume_claim" "immich_pvc" {
   metadata {
     name      = "immich-pvc"
-    namespace = "immich"
+    namespace = var.namespace
   }
 
   spec {
@@ -59,7 +59,7 @@ resource "kubernetes_manifest" "immich_postgres" {
     "kind"       = "Cluster"
     "metadata" = {
       "name"      = "immich-postgres"
-      "namespace" = "immich"
+      "namespace" = var.namespace
     }
     "spec" = {
       "instances" = 1
@@ -89,7 +89,7 @@ resource "helm_release" "immich" {
   name      = "immich"
   chart     = local.chart
   version   = local.chart_version
-  namespace = "immich"
+  namespace = var.namespace
   set = [
     {
       name  = "immich.persistence.library.existingClaim"
@@ -159,7 +159,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "immich-server.immich.svc.cluster.local"
+      value = "immich-server.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"
