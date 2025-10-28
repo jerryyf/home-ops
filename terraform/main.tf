@@ -132,7 +132,7 @@ module "portfolio" {
 
 module "immich" {
   source     = "./modules/immich"
-  namespace = "dev"
+  namespace  = "dev"
   nfs_server = var.nfs_server
   nfs_share  = var.nfs_share
   base_url   = var.base_url_private
