@@ -1,6 +1,5 @@
 variable "aws_region" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "aws_access_key_id" {
@@ -14,8 +13,7 @@ variable "aws_secret_access_key" {
 }
 
 variable "aws_region_lambda" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "aws_access_key_id_lambda" {
@@ -29,8 +27,7 @@ variable "aws_secret_access_key_lambda" {
 }
 
 variable "aws_lambda_function_name" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "bot_token" {
@@ -44,11 +41,14 @@ variable "chat_id" {
 }
 
 variable "nfs_server" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "nfs_share" {
+  type = string
+}
+
+variable "nfs_share_encrypted" {
   type = string
 }
 
@@ -58,66 +58,9 @@ variable "base_url_private" {
 }
 
 variable "base_url_public" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "base_url_portfolio" {
-  type      = string
-  sensitive = true
-}
-
-output "aws_access_key_id_lambda" {
-  value     = var.aws_access_key_id_lambda
-  sensitive = true
-}
-
-output "aws_secret_access_key_lambda" {
-  value     = var.aws_secret_access_key_lambda
-  sensitive = true
-}
-
-output "aws_region_lambda" {
-  value     = var.aws_region_lambda
-  sensitive = true
-}
-
-output "aws_lambda_function_name" {
-  value     = var.aws_lambda_function_name
-  sensitive = true
-}
-
-output "bot_token" {
-  value     = var.bot_token
-  sensitive = true
-}
-
-output "chat_id" {
-  value     = var.chat_id
-  sensitive = true
-}
-
-output "nfs_server" {
-  value     = var.nfs_server
-  sensitive = true
-}
-
-output "nfs_share" {
-  value     = var.nfs_share
-  sensitive = true
-}
-
-output "base_url_private" {
-  value     = var.base_url_private
-  sensitive = true
-}
-
-output "base_url_public" {
-  value     = var.base_url_public
-  sensitive = true
-}
-
-output "base_url_portfolio" {
-  value     = var.base_url_portfolio
-  sensitive = true
+  type = string
 }

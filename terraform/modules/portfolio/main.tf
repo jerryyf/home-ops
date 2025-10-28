@@ -1,20 +1,7 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.38.0"
-    }
-  }
-}
-
 resource "kubernetes_secret_v1" "webhook_aws_env" {
   metadata {
     name      = "webhook-aws-env"
-    namespace = "portfolio-prod"
+    namespace = var.namespace
   }
   data = {
     "AWS_REGION"               = var.aws_region_lambda
@@ -27,18 +14,19 @@ resource "kubernetes_secret_v1" "webhook_aws_env" {
 resource "kubernetes_secret_v1" "webhook_telegram_env" {
   metadata {
     name      = "webhook-telegram-env"
-    namespace = "portfolio-prod"
+    namespace = var.namespace
   }
   data = {
     "BOT_TOKEN" = var.bot_token
     "CHAT_ID"   = var.chat_id
   }
+  depends_on = [kubernetes_secret_v1.webhook_aws_env]
 }
 
 resource "kubernetes_deployment_v1" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio-prod"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -108,6 +96,15 @@ resource "kubernetes_deployment_v1" "portfolio" {
             }
           }
           env {
+            name = "AWS_SECRET_ACCESS_KEY"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret_v1.webhook_aws_env.metadata[0].name
+                key  = "AWS_SECRET_ACCESS_KEY"
+              }
+            }
+          }
+          env {
             name = "AWS_LAMBDA_FUNCTION_NAME"
             value_from {
               secret_key_ref {
@@ -126,7 +123,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
 resource "kubernetes_service" "portfolio" {
   metadata {
     name      = "portfolio"
-    namespace = "portfolio-prod"
+    namespace = var.namespace
   }
   spec {
     selector = {
@@ -144,10 +141,18 @@ resource "kubernetes_service" "portfolio" {
 
 resource "helm_release" "istio_config" {
   name      = "portfolio-ingress"
-  namespace = "istio-ingress"
+  namespace = "istio-config"
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [
+    {
+      name  = "certificate.create"
+      value = true
+    },
+    {
+      name  = "certificate.issuer"
+      value = "cloudflare"
+    },
     {
       name  = "hostname"
       value = var.base_url
@@ -158,13 +163,13 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "portfolio.portfolio-prod.svc.cluster.local"
+      value = "portfolio.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"
       value = 3000
     }
   ]
-  depends_on = [ kubernetes_service.portfolio ]
+  depends_on = [kubernetes_service.portfolio]
 }
 

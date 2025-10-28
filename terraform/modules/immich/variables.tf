@@ -1,6 +1,9 @@
+variable "namespace" {
+  type = string
+}
+
 variable "nfs_server" {
-  type      = string
-  sensitive = true
+  type = string
 }
 
 variable "nfs_share" {

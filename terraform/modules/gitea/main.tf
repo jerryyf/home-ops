@@ -1,19 +1,56 @@
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.2"
+resource "kubernetes_persistent_volume" "gitea_pv" {
+  metadata {
+    name = "gitea-pv"
+  }
+
+  spec {
+    storage_class_name = "nfs-csi"
+
+    claim_ref {
+      name      = "gitea-pvc"
+      namespace = var.namespace
     }
+
+    persistent_volume_source {
+      csi {
+        driver    = "nfs.csi.k8s.io"
+        read_only = false
+        volume_attributes = {
+          "server" = var.nfs_server
+          "share"  = local.nfs_path
+        }
+        volume_handle = "kubernetes/gitea"
+      }
+    }
+
+    capacity = {
+      storage = "256Gi"
+    }
+
+    access_modes                     = ["ReadWriteMany"]
+    mount_options                    = ["nfsvers=4.1"]
+    persistent_volume_reclaim_policy = "Delete"
   }
 }
 
-resource "kubernetes_namespace_v1" "gitea" {
+resource "kubernetes_persistent_volume_claim" "gitea_pvc" {
   metadata {
-    name = "gitea"
-    labels = {
-      "istio-injection" = "enabled"
+    name      = "gitea-pvc"
+    namespace = var.namespace
+  }
+
+  spec {
+    volume_name        = "gitea-pv"
+    access_modes       = ["ReadWriteMany"]
+    storage_class_name = "nfs-csi"
+    resources {
+      requests = {
+        storage = "256Gi"
+      }
     }
   }
+
+  depends_on = [kubernetes_persistent_volume.gitea_pv]
 }
 
 resource "helm_release" "gitea" {
@@ -21,25 +58,47 @@ resource "helm_release" "gitea" {
   repository      = local.repository
   chart           = "gitea"
   version         = local.gitea_version
-  namespace       = kubernetes_namespace_v1.gitea.metadata[0].name
+  namespace       = var.namespace
   atomic          = true
   cleanup_on_fail = true
 
-  set = [{
-    name  = "ingress.hosts[0].host"
-    value = local.gitea_hostname
+  set = [
+    {
+      name  = "ingress.hosts[0].host"
+      value = local.gitea_hostname
     },
     {
       name  = "ingress.hosts[0].paths[0].path"
       value = "/"
-  }]
+    },
+    {
+      name  = "persistence.storageClass"
+      value = "nfs-csi"
+    },
+    {
+      name  = "persistence.create"
+      value = "false"
+    },
+    {
+      name  = "persistence.claimName"
+      value = "gitea-pvc"
+    },
+    {
+      name  = "persistence.size"
+      value = "256Gi"
+    },
+    {
+      name  = "persistence.volumeName"
+      value = "gitea-pv"
+    },
+  ]
 
-  depends_on = [kubernetes_namespace_v1.gitea]
+  depends_on = [kubernetes_persistent_volume_claim.gitea_pvc]
 }
 
 resource "helm_release" "istio_config" {
   name      = "gitea-ingress"
-  namespace = "istio-ingress"
+  namespace = "istio-config"
   chart     = "${path.root}/helm/istio-config"
   atomic    = true
   set = [
@@ -53,7 +112,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "dest"
-      value = "gitea-http.gitea.svc.cluster.local"
+      value = "gitea-http.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"

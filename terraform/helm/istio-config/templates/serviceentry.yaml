@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1
 kind: ServiceEntry
 metadata:
-  name: {{ .Release.Name }}-example-service
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   hosts:
