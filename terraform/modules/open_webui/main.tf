@@ -3,7 +3,7 @@ resource "helm_release" "open_webui" {
   repository      = "https://helm.openwebui.com/"
   chart           = "open-webui"
   namespace       = "staging"
-  version         = "8.8.0"
+  version         = "8.12.2"
   atomic          = true
   cleanup_on_fail = true
   set = [

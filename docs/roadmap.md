@@ -6,3 +6,4 @@
 - [ ] DNS automation
 - [ ] VLAN automation
 - [ ] Kiali observability
+- [ ] Network policies
