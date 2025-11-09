@@ -44,7 +44,7 @@ resource "kubernetes_deployment_v1" "portfolio" {
       spec {
         container {
           name              = "portfolio"
-          image             = "ghcr.io/jerryyf/portfolio:1.1.3"
+          image             = "ghcr.io/jerryyf/portfolio:${var.tag}"
           image_pull_policy = "Always"
           port {
             container_port = "3000"
