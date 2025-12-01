@@ -17,6 +17,6 @@ spec:
     kind: OriginIssuer
     name: prod-issuer
     {{- else }}
-    name: {{ .Values.certificate.issuer }}
+    name: {{ .Values.certificate.issuer | default "cloudflare" }}
     {{- end }}
 {{- end }}

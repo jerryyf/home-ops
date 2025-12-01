@@ -1,0 +1,24 @@
+{{- if .Values.networkPolicies }}
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-allow-nothing
+  namespace: {{ .Release.Namespace }}
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-allow-get
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  action: ALLOW
+  rules:
+  - to:
+    - operation:
+        methods: ["GET"]
+{{- end }}

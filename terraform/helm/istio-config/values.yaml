@@ -16,13 +16,14 @@ port:
 # Create certificate
 certificate:
   create: false
+  # cloudflare or letsencrypt
   issuer:
 
 # ServiceEntry configuration for adding external or internal services into the mesh
 serviceEntry:
   enabled: false
   # DNS name that the ServiceEntry will represent
-  hostname: example.com
+  hostname: 
   # Determines whether the service is external to the mesh (MESH_EXTERNAL) or internal (MESH_INTERNAL)
   location: MESH_EXTERNAL
   # Ports that the service exposes
@@ -35,3 +36,5 @@ serviceEntry:
   # List of explicit endpoints (IP or hostname) when using STATIC resolution. Each entry can include specific ports.
   endpoints:
   - address: external-service.com
+
+networkPolicies:
