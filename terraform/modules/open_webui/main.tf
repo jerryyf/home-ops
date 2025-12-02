@@ -45,7 +45,7 @@ resource "helm_release" "open_webui" {
 resource "helm_release" "istio_config" {
   name      = "open-webui-ingress"
   namespace = "istio-config"
-  chart     = "${path.root}/helm/istio-config"
+  chart     = "${path.root}/../helm/istio-config"
   atomic    = true
   set = [
     {
