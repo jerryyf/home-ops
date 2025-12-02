@@ -21,7 +21,6 @@ terraform {
   }
 }
 
-# internal
 resource "kubernetes_namespace_v1" "dev" {
   metadata {
     name = "dev"
@@ -31,7 +30,6 @@ resource "kubernetes_namespace_v1" "dev" {
   }
 }
 
-# public
 resource "kubernetes_namespace_v1" "staging" {
   metadata {
     name = "staging"
@@ -41,7 +39,6 @@ resource "kubernetes_namespace_v1" "staging" {
   }
 }
 
-# public
 resource "kubernetes_namespace_v1" "prod" {
   metadata {
     name = "prod"
@@ -123,15 +120,14 @@ module "immich" {
   depends_on = [module.istio.helm_release]
 }
 
-# public ingress letsencrypt staging
-# TODO setup reverse proxy AWS
-# module "jellyfin" {
-#   source     = "./modules/jellyfin"
-#   nfs_server = var.nfs_server
-#   nfs_share  = var.nfs_share
-#   base_url   = var.base_url_private
-#   depends_on = [module.istio.helm_release]
-# }
+module "jellyfin" {
+  source     = "./modules/jellyfin"
+  namespace  = "dev"
+  nfs_server = var.nfs_server
+  nfs_share  = var.nfs_share
+  base_url   = var.base_url_private
+  depends_on = [module.istio.helm_release]
+}
 
 module "gitea" {
   source     = "./modules/gitea"

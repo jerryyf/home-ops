@@ -137,6 +137,22 @@ resource "helm_release" "immich" {
     {
       name  = "valkey.enabled"
       value = true
+    },
+    {
+      name  = "controllers.main.containers.main.resources.limits.cpu"
+      value = "200m"
+    },
+    {
+      name  = "controllers.main.containers.main.resources.limits.memory"
+      value = "1Gi"
+    },
+    {
+      name  = "controllers.main.containers.main.resources.requests.cpu"
+      value = "100m"
+    },
+    {
+      name  = "controllers.main.containers.main.resources.requests.memory"
+      value = "500Mi"
     }
   ]
 
@@ -146,7 +162,7 @@ resource "helm_release" "immich" {
 resource "helm_release" "istio_config" {
   name      = "immich-ingress"
   namespace = "istio-config"
-  chart     = "${path.root}/helm/istio-config"
+  chart     = "${path.root}/../helm/istio-config"
   atomic    = true
   set = [
     {
@@ -170,3 +186,39 @@ resource "helm_release" "istio_config" {
   depends_on = [helm_release.immich]
 }
 
+resource "kubernetes_horizontal_pod_autoscaler_v2" "immich_hpa" {
+  metadata {
+    name      = "immich-hpa"
+    namespace = "dev"
+  }
+  spec {
+    max_replicas = 3
+    min_replicas = 1
+    metric {
+      resource {
+        name = "cpu"
+        target {
+          average_utilization = 80
+          type                = "Utilization"
+        }
+      }
+      type = "Resource"
+    }
+    metric {
+      resource {
+        name = "memory"
+        target {
+          average_utilization = 80
+          type                = "Utilization"
+        }
+      }
+      type = "Resource"
+    }
+    scale_target_ref {
+      api_version = "apps/v1"
+      kind        = "Deployment"
+      name        = "immich-server"
+    }
+  }
+  depends_on = [helm_release.immich]
+}

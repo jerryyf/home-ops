@@ -48,10 +48,6 @@ variable "nfs_share" {
   type = string
 }
 
-variable "nfs_share_encrypted" {
-  type = string
-}
-
 variable "base_url_private" {
   type      = string
   sensitive = true
