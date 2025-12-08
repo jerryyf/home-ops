@@ -129,6 +129,15 @@ module "jellyfin" {
   depends_on = [module.istio.helm_release]
 }
 
+module "jellyseerr" {
+  source     = "./modules/jellyseerr"
+  namespace  = "dev"
+  nfs_server = var.nfs_server
+  nfs_share  = var.nfs_share
+  base_url   = var.base_url_private
+  depends_on = [module.istio.helm_release]
+}
+
 module "gitea" {
   source     = "./modules/gitea"
   namespace  = "dev"

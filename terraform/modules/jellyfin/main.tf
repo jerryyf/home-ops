@@ -28,7 +28,7 @@ resource "helm_release" "istio_config" {
     },
     {
       name  = "path"
-      value = "/jellyfin"
+      value = "/"
     },
     {
       name  = "dest"
