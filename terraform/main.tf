@@ -107,6 +107,7 @@ module "portfolio" {
   bot_token                    = var.bot_token
   chat_id                      = var.chat_id
   base_url                     = var.base_url_portfolio
+  tag                          = "1.2.0"
 
   depends_on = [module.istio.helm_release]
 }
@@ -147,9 +148,9 @@ module "gitea" {
   depends_on = [module.istio.helm_release]
 }
 
-# public ingress cloudflare proxy
 module "open_webui" {
   source     = "./modules/open_webui"
-  base_url   = var.base_url_public
+  namespace  = "dev"
+  base_url   = var.base_url_private
   depends_on = [module.istio.helm_release]
 }

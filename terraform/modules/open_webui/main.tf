@@ -50,23 +50,19 @@ resource "helm_release" "istio_config" {
   set = [
     {
       name  = "certificate.create"
-      value = true
-    },
-    {
-      name  = "certificate.issuer"
-      value = "cloudflare"
+      value = false
     },
     {
       name  = "hostname"
-      value = "staging.${var.base_url}"
+      value = "open-webui.${var.base_url}"
     },
     {
       name  = "path"
-      value = "/chat"
+      value = "/"
     },
     {
       name  = "dest"
-      value = "open-webui.staging.svc.cluster.local"
+      value = "open-webui.${var.namespace}.svc.cluster.local"
     },
     {
       name  = "port"
