@@ -32,6 +32,5 @@ variable "namespace" {
 }
 
 variable "tag" {
-  type    = string
-  default = "1.2.0"
+  type = string
 }

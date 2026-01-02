@@ -107,7 +107,7 @@ module "portfolio" {
   bot_token                    = var.bot_token
   chat_id                      = var.chat_id
   base_url                     = var.base_url_portfolio
-  tag                          = "1.2.0"
+  tag                          = "1.2.1"
 
   depends_on = [module.istio.helm_release]
 }
@@ -139,14 +139,14 @@ module "jellyseerr" {
   depends_on = [module.istio.helm_release]
 }
 
-module "gitea" {
-  source     = "./modules/gitea"
-  namespace  = "dev"
-  nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
+# module "gitea" {
+#   source     = "./modules/gitea"
+#   namespace  = "dev"
+#   nfs_server = var.nfs_server
+#   nfs_share  = var.nfs_share
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
 
 module "open_webui" {
   source     = "./modules/open_webui"
