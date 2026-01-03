@@ -144,7 +144,7 @@ resource "helm_release" "immich" {
     },
     {
       name  = "controllers.main.containers.main.resources.limits.memory"
-      value = "1Gi"
+      value = "2Gi"
     },
     {
       name  = "controllers.main.containers.main.resources.requests.cpu"
@@ -189,7 +189,7 @@ resource "helm_release" "istio_config" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "immich_hpa" {
   metadata {
     name      = "immich-hpa"
-    namespace = "dev"
+    namespace = var.namespace
   }
   spec {
     max_replicas = 3
