@@ -1,3 +1,13 @@
+resource "helm_release" "cnpg" {
+  name             = "cnpg"
+  repository       = "cloudnative-pg"
+  chart            = "cloudnative-pg"
+  namespace        = "cnpg-system"
+  version          = "0.23.2"
+  atomic           = true
+  create_namespace = true
+}
+
 resource "kubernetes_persistent_volume" "immich_pv" {
   metadata {
     name = "immich-pv"
@@ -83,6 +93,7 @@ resource "kubernetes_manifest" "immich_postgres" {
       }
     }
   }
+  depends_on = [ helm_release.cnpg ]
 }
 
 resource "helm_release" "immich" {

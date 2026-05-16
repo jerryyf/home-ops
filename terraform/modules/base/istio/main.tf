@@ -6,10 +6,10 @@ resource "kubernetes_namespace_v1" "istio_config" {
 
 resource "helm_release" "istio_base" {
   name             = "istio-base"
-  repository       = "istio"
+  repository       = local.repo
   chart            = "base"
   namespace        = "istio-system"
-  version          = "1.27.0"
+  version          = local.version
   atomic           = true
   create_namespace = true
   set = [{
@@ -20,31 +20,25 @@ resource "helm_release" "istio_base" {
 
 resource "helm_release" "istiod" {
   name             = "istiod"
-  repository       = "istio"
+  repository       = local.repo
   chart            = "istiod"
   namespace        = "istio-system"
-  version          = "1.27.0"
+  version          = local.version
   atomic           = true
   create_namespace = true
-  set = [{
-    name  = "global.platform"
-    value = "k3s"
-  }]
+
   depends_on = [helm_release.istio_base]
 }
 
 resource "helm_release" "istio_ingress" {
   name             = "istio-ingress"
-  repository       = "istio"
+  repository       = local.repo
   chart            = "gateway"
   namespace        = "istio-ingress"
-  version          = "1.27.0"
+  version          = local.version
   atomic           = true
   create_namespace = true
-  set = [{
-    name  = "global.platform"
-    value = "k3s"
-  }]
+
   depends_on = [helm_release.istiod]
 }
 
@@ -68,5 +62,5 @@ resource "kubernetes_manifest" "istio_telemetry" {
       ]
     }
   }
-  depends_on = [helm_release.istio_ingress]
+  depends_on = [helm_release.istio_base]
 }
