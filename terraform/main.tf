@@ -30,7 +30,7 @@ module "bootstrap" {
 }
 
 resource "kubectl_manifest" "istio_telemetry" {
-  yaml_body = <<EOF
+  yaml_body  = <<EOF
     apiVersion: telemetry.istio.io/v1
     kind: Telemetry
     metadata:
