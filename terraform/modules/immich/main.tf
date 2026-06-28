@@ -1,4 +1,10 @@
-resource "kubernetes_persistent_volume" "immich_pv" {
+resource "kubernetes_namespace_v1" "immich" {
+  metadata {
+    name = var.namespace
+  }
+}
+
+resource "kubernetes_persistent_volume_v1" "immich_pv" {
   metadata {
     name = "immich-pv"
   }
@@ -33,7 +39,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "immich_pvc" {
+resource "kubernetes_persistent_volume_claim_v1" "immich_pvc" {
   metadata {
     name      = "immich-pvc"
     namespace = var.namespace
@@ -50,7 +56,7 @@ resource "kubernetes_persistent_volume_claim" "immich_pvc" {
     }
   }
 
-  depends_on = [kubernetes_persistent_volume.immich_pv]
+  depends_on = [kubernetes_persistent_volume_v1.immich_pv]
 }
 
 resource "kubernetes_manifest" "immich_postgres" {
@@ -83,6 +89,7 @@ resource "kubernetes_manifest" "immich_postgres" {
       }
     }
   }
+  depends_on = [helm_release.cnpg]
 }
 
 resource "helm_release" "immich" {

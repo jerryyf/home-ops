@@ -12,6 +12,10 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
   }
   backend "s3" {
     bucket  = ""
@@ -21,44 +25,26 @@ terraform {
   }
 }
 
-resource "kubernetes_namespace_v1" "dev" {
-  metadata {
-    name = "dev"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
+module "bootstrap" {
+  source = "./modules/bootstrap"
 }
 
-resource "kubernetes_namespace_v1" "staging" {
-  metadata {
-    name = "staging"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
+resource "kubectl_manifest" "istio_telemetry" {
+  yaml_body  = <<EOF
+    apiVersion: telemetry.istio.io/v1
+    kind: Telemetry
+    metadata:
+      name: mesh-default
+      namespace: istio-system
+    spec:
+      accessLogging:
+        - providers:
+            - name: envoy
+    EOF
+  depends_on = [module.bootstrap]
 }
 
-resource "kubernetes_namespace_v1" "prod" {
-  metadata {
-    name = "prod"
-    labels = {
-      "istio-injection" = "enabled"
-    }
-  }
-}
-
-resource "helm_release" "csi_driver_nfs" {
-  name             = "csi-driver-nfs"
-  repository       = "csi-driver-nfs"
-  chart            = "csi-driver-nfs"
-  namespace        = "kube-system"
-  version          = "4.11.0"
-  atomic           = true
-  create_namespace = true
-}
-
-resource "kubernetes_storage_class" "nfs_csi" {
+resource "kubernetes_storage_class_v1" "nfs_csi" {
   metadata {
     name = "nfs-csi"
   }
@@ -74,83 +60,79 @@ resource "kubernetes_storage_class" "nfs_csi" {
     "nfsvers=4.1"
   ]
 
-  depends_on = [helm_release.csi_driver_nfs]
+  depends_on = [module.bootstrap]
 }
 
-resource "helm_release" "cnpg" {
-  name             = "cnpg"
-  repository       = "cloudnative-pg"
-  chart            = "cloudnative-pg"
-  namespace        = "cnpg-system"
-  version          = "0.23.2"
-  atomic           = true
-  create_namespace = true
-}
+# module "cert_manager" {
+#   source = "./modules/base/cert_manager"
+# }
 
-module "cert_manager" {
-  source = "./modules/cert_manager"
-}
+# module "istio" {
+#   source = "./modules/base/istio"
 
-module "istio" {
-  source = "./modules/istio"
+#   depends_on = [module.cert_manager.helm_release]
+# }
 
-  depends_on = [module.cert_manager.helm_release]
-}
+# module "argocd" {
+#   source = "./modules/base/argocd"
+
+#   depends_on = [module.cert_manager.helm_release]
+# }
 
 # public ingress cloudflare proxy
-module "portfolio" {
-  source                       = "./modules/portfolio"
-  aws_region_lambda            = var.aws_region_lambda
-  aws_access_key_id_lambda     = var.aws_access_key_id_lambda
-  aws_secret_access_key_lambda = var.aws_secret_access_key_lambda
-  aws_lambda_function_name     = var.aws_lambda_function_name
-  bot_token                    = var.bot_token
-  chat_id                      = var.chat_id
-  base_url                     = var.base_url_portfolio
-  tag                          = "1.2.1"
+# module "portfolio" {
+#   source                       = "./modules/portfolio"
+#   aws_region_lambda            = var.aws_region_lambda
+#   aws_access_key_id_lambda     = var.aws_access_key_id_lambda
+#   aws_secret_access_key_lambda = var.aws_secret_access_key_lambda
+#   aws_lambda_function_name     = var.aws_lambda_function_name
+#   bot_token                    = var.bot_token
+#   chat_id                      = var.chat_id
+#   base_url                     = var.base_url_portfolio
+#   tag                          = "1.2.1"
 
-  depends_on = [module.istio.helm_release]
-}
+#   depends_on = [module.istio.helm_release]
+# }
 
-module "immich" {
-  source     = "./modules/immich"
-  namespace  = "dev"
-  nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
-
-module "jellyfin" {
-  source     = "./modules/jellyfin"
-  namespace  = "dev"
-  nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
-
-module "jellyseerr" {
-  source     = "./modules/jellyseerr"
-  namespace  = "dev"
-  nfs_server = var.nfs_server
-  nfs_share  = var.nfs_share
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
-
-# module "gitea" {
-#   source     = "./modules/gitea"
-#   namespace  = "dev"
+# module "immich" {
+#   source     = "./modules/immich"
+#   namespace  = "immich"
 #   nfs_server = var.nfs_server
 #   nfs_share  = var.nfs_share
 #   base_url   = var.base_url_private
 #   depends_on = [module.istio.helm_release]
 # }
 
-module "open_webui" {
-  source     = "./modules/open_webui"
-  namespace  = "dev"
-  base_url   = var.base_url_private
-  depends_on = [module.istio.helm_release]
-}
+# module "jellyfin" {
+#   source     = "./modules/jellyfin"
+#   namespace  = "jellyfin"
+#   nfs_server = var.nfs_server
+#   nfs_share  = var.nfs_share
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
+
+# module "jellyseerr" {
+#   source     = "./modules/jellyseerr"
+#   namespace  = "jellyseerr"
+#   nfs_server = var.nfs_server
+#   nfs_share  = var.nfs_share
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
+
+# module "gitea" {
+#   source     = "./modules/gitea"
+#   namespace  = "gitea"
+#   nfs_server = var.nfs_server
+#   nfs_share  = var.nfs_share
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
+
+# module "open_webui" {
+#   source     = "./modules/open_webui"
+#   namespace  = "open-webui"
+#   base_url   = var.base_url_private
+#   depends_on = [module.istio.helm_release]
+# }
