@@ -12,6 +12,10 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
   }
   backend "s3" {
     bucket  = ""
@@ -25,28 +29,21 @@ module "bootstrap" {
   source = "./modules/bootstrap"
 }
 
-resource "kubernetes_manifest" "istio_telemetry" {
-  manifest = {
-    "apiVersion" = "telemetry.istio.io/v1"
-    "kind"       = "Telemetry"
-    "metadata" = {
-      "name"      = "mesh-default"
-      "namespace" = "istio-system"
-    }
-    "spec" = {
-      "accessLogging" = [
-        {
-          "providers" = [
-            {
-              "name" = "envoy"
-            },
-          ]
-        },
-      ]
-    }
-  }
+resource "kubectl_manifest" "istio_telemetry" {
+  yaml_body = <<EOF
+    apiVersion: telemetry.istio.io/v1
+    kind: Telemetry
+    metadata:
+      name: mesh-default
+      namespace: istio-system
+    spec:
+      accessLogging:
+        - providers:
+            - name: envoy
+    EOF
   depends_on = [module.bootstrap]
 }
+
 resource "kubernetes_storage_class_v1" "nfs_csi" {
   metadata {
     name = "nfs-csi"
@@ -63,7 +60,7 @@ resource "kubernetes_storage_class_v1" "nfs_csi" {
     "nfsvers=4.1"
   ]
 
-  depends_on = [helm_release.csi_driver_nfs]
+  depends_on = [module.bootstrap]
 }
 
 # module "cert_manager" {

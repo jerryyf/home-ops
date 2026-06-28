@@ -61,9 +61,3 @@ mkdir -p ~/.kube
 sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 sudo chown $(id -u):$(id -g) ~/.kube/config
 ```
-
-Terraform has a limitation when planning/applying everything in a single run - custom resources are rejected by the API server as their CRDs aren't installed yet. So you should apply the boostrap module first followed by other modules:
-
-```bash
-cd terraform && terraform apply -target=module.bootstrap
-```
