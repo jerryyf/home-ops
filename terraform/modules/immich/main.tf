@@ -1,4 +1,4 @@
-resource kubernetes_namespace_v1 "immich" {
+resource "kubernetes_namespace_v1" "immich" {
   metadata {
     name = var.namespace
   }
@@ -89,7 +89,7 @@ resource "kubernetes_manifest" "immich_postgres" {
       }
     }
   }
-  depends_on = [ helm_release.cnpg ]
+  depends_on = [helm_release.cnpg]
 }
 
 resource "helm_release" "immich" {
