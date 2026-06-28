@@ -1,14 +1,10 @@
-resource "helm_release" "cnpg" {
-  name             = "cnpg"
-  repository       = "cloudnative-pg"
-  chart            = "cloudnative-pg"
-  namespace        = "cnpg-system"
-  version          = "0.23.2"
-  atomic           = true
-  create_namespace = true
+resource kubernetes_namespace_v1 "immich" {
+  metadata {
+    name = var.namespace
+  }
 }
 
-resource "kubernetes_persistent_volume" "immich_pv" {
+resource "kubernetes_persistent_volume_v1" "immich_pv" {
   metadata {
     name = "immich-pv"
   }
@@ -43,7 +39,7 @@ resource "kubernetes_persistent_volume" "immich_pv" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "immich_pvc" {
+resource "kubernetes_persistent_volume_claim_v1" "immich_pvc" {
   metadata {
     name      = "immich-pvc"
     namespace = var.namespace
@@ -60,7 +56,7 @@ resource "kubernetes_persistent_volume_claim" "immich_pvc" {
     }
   }
 
-  depends_on = [kubernetes_persistent_volume.immich_pv]
+  depends_on = [kubernetes_persistent_volume_v1.immich_pv]
 }
 
 resource "kubernetes_manifest" "immich_postgres" {

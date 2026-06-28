@@ -21,16 +21,32 @@ terraform {
   }
 }
 
-resource "helm_release" "csi_driver_nfs" {
-  name             = "csi-driver-nfs"
-  repository       = "https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts"
-  chart            = "csi-driver-nfs"
-  namespace        = "kube-system"
-  version          = "4.11.0"
-  atomic           = true
-  create_namespace = true
+module "bootstrap" {
+  source = "./modules/bootstrap"
 }
 
+resource "kubernetes_manifest" "istio_telemetry" {
+  manifest = {
+    "apiVersion" = "telemetry.istio.io/v1"
+    "kind"       = "Telemetry"
+    "metadata" = {
+      "name"      = "mesh-default"
+      "namespace" = "istio-system"
+    }
+    "spec" = {
+      "accessLogging" = [
+        {
+          "providers" = [
+            {
+              "name" = "envoy"
+            },
+          ]
+        },
+      ]
+    }
+  }
+  depends_on = [module.bootstrap]
+}
 resource "kubernetes_storage_class_v1" "nfs_csi" {
   metadata {
     name = "nfs-csi"
@@ -50,15 +66,21 @@ resource "kubernetes_storage_class_v1" "nfs_csi" {
   depends_on = [helm_release.csi_driver_nfs]
 }
 
-module "cert_manager" {
-  source = "./modules/base/cert_manager"
-}
+# module "cert_manager" {
+#   source = "./modules/base/cert_manager"
+# }
 
-module "istio" {
-  source = "./modules/base/istio"
+# module "istio" {
+#   source = "./modules/base/istio"
 
-  depends_on = [module.cert_manager.helm_release]
-}
+#   depends_on = [module.cert_manager.helm_release]
+# }
+
+# module "argocd" {
+#   source = "./modules/base/argocd"
+
+#   depends_on = [module.cert_manager.helm_release]
+# }
 
 # public ingress cloudflare proxy
 # module "portfolio" {
@@ -77,7 +99,7 @@ module "istio" {
 
 # module "immich" {
 #   source     = "./modules/immich"
-#   namespace  = "dev"
+#   namespace  = "immich"
 #   nfs_server = var.nfs_server
 #   nfs_share  = var.nfs_share
 #   base_url   = var.base_url_private
@@ -86,7 +108,7 @@ module "istio" {
 
 # module "jellyfin" {
 #   source     = "./modules/jellyfin"
-#   namespace  = "dev"
+#   namespace  = "jellyfin"
 #   nfs_server = var.nfs_server
 #   nfs_share  = var.nfs_share
 #   base_url   = var.base_url_private
@@ -95,7 +117,7 @@ module "istio" {
 
 # module "jellyseerr" {
 #   source     = "./modules/jellyseerr"
-#   namespace  = "dev"
+#   namespace  = "jellyseerr"
 #   nfs_server = var.nfs_server
 #   nfs_share  = var.nfs_share
 #   base_url   = var.base_url_private
@@ -104,7 +126,7 @@ module "istio" {
 
 # module "gitea" {
 #   source     = "./modules/gitea"
-#   namespace  = "dev"
+#   namespace  = "gitea"
 #   nfs_server = var.nfs_server
 #   nfs_share  = var.nfs_share
 #   base_url   = var.base_url_private
@@ -113,7 +135,7 @@ module "istio" {
 
 # module "open_webui" {
 #   source     = "./modules/open_webui"
-#   namespace  = "dev"
+#   namespace  = "open-webui"
 #   base_url   = var.base_url_private
 #   depends_on = [module.istio.helm_release]
 # }

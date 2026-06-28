@@ -18,4 +18,5 @@ locals {
   jellyfin_path     = "${var.nfs_share}/jellyfin"
   media_path        = "${var.nfs_share}/library"
   jellyfin_hostname = "jellyfin.${var.base_url}"
+  repository        = "https://jellyfin.github.io/jellyfin-helm"
 }

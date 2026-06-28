@@ -1,6 +1,7 @@
 resource "helm_release" "jellyfin" {
   name             = "jellyfin"
-  chart            = "jellyfin/jellyfin"
+  chart            = "jellyfin"
+  repository       = "https://jellyfin.github.io/jellyfin-helm"
   namespace        = var.namespace
   atomic           = true
   create_namespace = true
@@ -18,7 +19,7 @@ resource "helm_release" "jellyfin" {
 
 resource "helm_release" "istio_config" {
   name      = "jellyfin-ingress"
-  namespace = "istio-config"
+  namespace = module.bootstrap.kubernetes_namespace_v1_istio-config.metadata[0].name
   chart     = "${path.root}/../helm/istio-config"
   atomic    = true
   set = [

@@ -16,8 +16,10 @@ The homelab setup focuses on the following core components:
 
 - [**Istio**](https://istio.io): An open-source service mesh that provides traffic management, security, and observability for microservices.
 - [**cert-manager**](https://cert-manager.io): A native Kubernetes certificate management controller that helps with issuing and renewing TLS certificates from various issuing sources.
+- ArgoCD
+- csi-driver-nfs
 
-## Usage
+## Setup
 
 ### Terraform Provisioning
 
@@ -37,3 +39,31 @@ In the [`terraform/`](./terraform) directory:
    ```bash
    terraform apply -var-file="./terraform.tfvars"
    ```
+
+### Bootstrapping K3S
+
+K3S comes installed with Traefik by default which conflicts with Istio's ingress gateway because Traefik reserves the ingress ports for itself. To install K3S without Traefik:
+
+```bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s - --disable=traefik
+```
+
+Or if it's already installed, you can edit the systemctl service to start k3s with `--disable=traefik` then restart it:
+
+```bash
+sudo systemctl daemon-reload && sudo systemctl restart k3s
+```
+
+Copy the kubeconfig to use kubectl remotely:
+
+```bash
+mkdir -p ~/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+sudo chown $(id -u):$(id -g) ~/.kube/config
+```
+
+Terraform has a limitation when planning/applying everything in a single run - custom resources are rejected by the API server as their CRDs aren't installed yet. So you should apply the boostrap module first followed by other modules:
+
+```bash
+cd terraform && terraform apply -target=module.bootstrap
+```
