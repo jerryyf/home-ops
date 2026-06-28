@@ -71,7 +71,7 @@ resource "helm_release" "cnpg" {
   repository       = "https://cloudnative-pg.github.io/charts"
   chart            = "cloudnative-pg"
   namespace        = kubernetes_namespace_v1.cnpg_system.metadata[0].name
-  version          = "0.23.2"
+  version          = "0.28.3"
   atomic           = true
   create_namespace = true
 }
@@ -115,7 +115,7 @@ resource "kubernetes_namespace_v1" "argocd" {
 
 resource "helm_release" "argocd" {
   max_history      = 5
-  name             = "argo-cd"
+  name             = "argocd"
   chart            = "argo-cd"
   repository       = local.argocd_repo
   namespace        = kubernetes_namespace_v1.argocd.metadata[0].name
