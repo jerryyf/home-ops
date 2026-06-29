@@ -10,11 +10,15 @@ spec:
     size: 8Gi
   postgresql:
     shared_preload_libraries:
-    - vchord.so
-  bootstrap:
-    initdb:
-      postInitSQL:
-      - "CREATE EXTENSION IF NOT EXISTS vchord CASCADE;"
+    - "vchord.so"
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+        dynamic_library_path:
+          - /usr/lib/postgresql/18/lib
+        extension_control_path:
+          - /usr/share/postgresql/18/
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
@@ -27,5 +31,11 @@ spec:
   cluster:
     name: immich-pg
   extensions:
-  - name: vchord
-    ensure: present
+    - name: vector
+      ensure: present
+    - name: vchord
+      ensure: present
+    - name: earthdistance
+      ensure: present
+    - name: cube
+      ensure: present
