@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-pv
+spec:
+  storageClassName: nfs-csi
+  claimRef:
+    name: immich-pvc
+    namespace: immich
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeAttributes:
+      server: 192.168.1.100
+      share: /mnt/store/encrypted/kubernetes/immich
+    volumeHandle: truenas/immich
+  capacity:
+    storage: 512Gi
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - nfsvers=4.1
+  persistentVolumeReclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-pvc
+  namespace: immich
+spec:
+  volumeName: immich-pv
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-csi
+  resources:
+    requests:
+      storage: 512Gi
