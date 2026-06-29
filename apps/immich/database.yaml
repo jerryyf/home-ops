@@ -8,6 +8,13 @@ spec:
   instances: 1
   storage:
     size: 8Gi
+  postgresql:
+    shared_preload_libraries:
+    - vchord.so
+  bootstrap:
+    initdb:
+      postInitSQL:
+      - "CREATE EXTENSION IF NOT EXISTS vchord CASCADE;"
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
@@ -21,6 +28,4 @@ spec:
     name: immich-pg
   extensions:
   - name: vchord
-    ensure: present
-  - name: earthdistance
     ensure: present
