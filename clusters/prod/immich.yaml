@@ -8,6 +8,11 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: immich
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
   sources:
   - repoURL: https://github.com/jerryyf/home-ops.git
     targetRevision: feat/immich
