@@ -28,37 +28,3 @@ terraform {
 module "bootstrap" {
   source = "./modules/bootstrap"
 }
-
-resource "kubectl_manifest" "istio_telemetry" {
-  yaml_body  = <<EOF
-    apiVersion: telemetry.istio.io/v1
-    kind: Telemetry
-    metadata:
-      name: mesh-default
-      namespace: istio-system
-    spec:
-      accessLogging:
-        - providers:
-            - name: envoy
-    EOF
-  depends_on = [module.bootstrap]
-}
-
-resource "kubernetes_storage_class_v1" "nfs_csi" {
-  metadata {
-    name = "nfs-csi"
-  }
-  storage_provisioner = "nfs.csi.k8s.io"
-  parameters = {
-    server = var.nfs_server
-    share  = var.nfs_share
-  }
-  reclaim_policy         = "Delete"
-  volume_binding_mode    = "Immediate"
-  allow_volume_expansion = true
-  mount_options = [
-    "nfsvers=4.1"
-  ]
-
-  depends_on = [module.bootstrap]
-}
