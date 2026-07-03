@@ -19,4 +19,5 @@ spec:
     path: apps/jellyfin
   - repoURL: https://jellyfin.github.io/jellyfin-helm
     targetRevision: 3.2.0
-    path: jellyfin
+    helm:
+      releaseName: jellyfin
