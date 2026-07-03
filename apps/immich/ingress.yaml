@@ -8,11 +8,12 @@ spec:
     istio: ingress
   servers:
     - hosts:
-        - immich.local
+        - '*.home.arpa'
       port:
         name: http
         number: 80
         protocol: HTTP
+
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -23,7 +24,7 @@ spec:
   gateways:
   - istio-ingress/immich
   hosts:
-  - "*"
+  - 'immich.home.arpa'
   http:
   - match:
     - uri:
