@@ -21,12 +21,15 @@ metadata:
   namespace: immich
 spec:
   gateways:
-    - istio-ingress/immich
+  - istio-ingress/immich
   hosts:
-    - immich.local
+  - immich.local
   http:
-    - route:
-        - destination:
-            host: immich-server.immich.svc.cluster.local
-            port:
-              number: 2283
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: immich-server.immich.svc.cluster.local
+        port:
+          number: 2283
