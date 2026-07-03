@@ -23,7 +23,7 @@ spec:
   gateways:
   - istio-ingress/immich
   hosts:
-  - immich.local
+  - "*"
   http:
   - match:
     - uri:
