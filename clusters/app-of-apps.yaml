@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/jerryyf/home-ops.git
-    targetRevision: feat/immich
+    targetRevision: main
     path: clusters/prod
   destination:
     server: https://kubernetes.default.svc

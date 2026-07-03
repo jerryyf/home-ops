@@ -15,7 +15,7 @@ spec:
       enabled: true
   sources:
   - repoURL: https://github.com/jerryyf/home-ops.git
-    targetRevision: feat/immich
+    targetRevision: main
     path: apps/immich
   - repoURL: oci://ghcr.io/immich-app/immich-charts/immich
     targetRevision: 0.12.0
