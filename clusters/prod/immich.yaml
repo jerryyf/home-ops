@@ -15,7 +15,7 @@ spec:
       enabled: true
   sources:
   - repoURL: https://github.com/jerryyf/home-ops.git
-    targetRevision: fix/storageclass
+    targetRevision: main
     path: apps/immich
   - repoURL: ghcr.io/immich-app/immich-charts
     chart: immich
