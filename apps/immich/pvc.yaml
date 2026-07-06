@@ -12,7 +12,7 @@ spec:
     readOnly: false
     volumeAttributes:
       server: 192.168.1.100
-      share: /mnt/store/encrypted/immich
+      share: /mnt/store/encrypted/kube/immich
     volumeHandle: truenas/immich
   capacity:
     storage: 512Gi
