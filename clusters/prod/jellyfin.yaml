@@ -25,4 +25,5 @@ spec:
         persistence:
           media:
             storageClass: jellyfin-sc
-            size: 512Gi
+            size: 1Ti
+            existingClaim: jellyfin-pvc
