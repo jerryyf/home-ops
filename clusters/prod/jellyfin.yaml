@@ -27,3 +27,5 @@ spec:
             storageClass: jellyfin-sc
             size: 1Ti
             existingClaim: jellyfin-pvc
+        nodeSelector:
+          kubernetes.io/hostname: k3s-worker-1
