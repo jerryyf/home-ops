@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: jellyfin
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - hosts:
+        - '*.home.arpa'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  gateways:
+  - istio-ingress/jellyfin
+  hosts:
+  - 'jellyfin.home.arpa'
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: jellyfin.jellyfin.svc.cluster.local
+        port:
+          number: 8096

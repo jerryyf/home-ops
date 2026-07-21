@@ -1,37 +1,37 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: immich-pv
+  name: jellyfin-pv
 spec:
-  storageClassName: nfs-csi
+  storageClassName: jellyfin-sc
   claimRef:
-    name: immich-pvc
-    namespace: immich
+    name: jellyfin-pvc
+    namespace: jellyfin
   csi:
     driver: nfs.csi.k8s.io
     readOnly: false
     volumeAttributes:
       server: 192.168.1.100
-      share: /mnt/store/encrypted/kube/immich
-    volumeHandle: truenas/immich
+      share: /mnt/store/media
+    volumeHandle: truenas/jellyfin
   capacity:
-    storage: 512Gi
+    storage: 1Ti
   accessModes:
     - ReadWriteMany
   mountOptions:
     - nfsvers=4.1
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-pvc
-  namespace: immich
+  name: jellyfin-pvc
+  namespace: jellyfin
 spec:
-  volumeName: immich-pv
+  volumeName: jellyfin-pv
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-csi
+  storageClassName: jellyfin-sc
   resources:
     requests:
-      storage: 512Gi
+      storage: 1Ti

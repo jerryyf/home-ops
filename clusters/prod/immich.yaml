@@ -17,9 +17,9 @@ spec:
   - repoURL: https://github.com/jerryyf/home-ops.git
     targetRevision: main
     path: apps/immich
-  - repoURL: oci://ghcr.io/immich-app/immich-charts/immich
+  - repoURL: ghcr.io/immich-app/immich-charts
+    chart: immich
     targetRevision: 0.12.0
-    path: .
     helm:
       values: |
         immich:
