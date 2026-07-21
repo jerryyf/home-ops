@@ -32,7 +32,7 @@ spec:
             containers:
               main:
                 image:
-                  tag: v2.7.5
+                  tag: v3.0.3
                 env:
                   DB_HOSTNAME:
                     valueFrom:
@@ -56,11 +56,11 @@ spec:
                         key: dbname
                 resources:
                   limits:
-                    cpu: 200m
-                    memory: 2Gi
+                    cpu: 400m
+                    memory: 4Gi
                   requests:
-                    cpu: 100m
-                    memory: 500Mi
+                    cpu: 200m
+                    memory: 1Gi
 
         valkey:
           enabled: true
