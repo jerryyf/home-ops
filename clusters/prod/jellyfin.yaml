@@ -15,7 +15,7 @@ spec:
       enabled: true
   sources:
   - repoURL: https://github.com/jerryyf/home-ops.git
-    targetRevision: feat/jellyfin
+    targetRevision: main
     path: apps/jellyfin
   - repoURL: https://jellyfin.github.io/jellyfin-helm
     chart: jellyfin
