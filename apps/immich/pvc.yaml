@@ -20,7 +20,7 @@ spec:
     - ReadWriteMany
   mountOptions:
     - nfsvers=4.1
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
