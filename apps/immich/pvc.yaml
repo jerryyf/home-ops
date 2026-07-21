@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: immich-pv
 spec:
-  storageClassName: nfs-csi
+  storageClassName: immich-sc
   claimRef:
     name: immich-pvc
     namespace: immich
@@ -12,7 +12,7 @@ spec:
     readOnly: false
     volumeAttributes:
       server: 192.168.1.100
-      share: /mnt/store/encrypted/kube/immich
+      share: /mnt/store/encrypted/immich
     volumeHandle: truenas/immich
   capacity:
     storage: 512Gi
@@ -31,7 +31,7 @@ spec:
   volumeName: immich-pv
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-csi
+  storageClassName: immich-sc
   resources:
     requests:
       storage: 512Gi
