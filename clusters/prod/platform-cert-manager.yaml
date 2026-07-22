@@ -18,7 +18,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
   source:
-    repoURL: oci://quay.io/jetstack/charts
+    repoURL: quay.io/jetstack/charts
     chart: cert-manager
     targetRevision: v1.19.0
     helm:
