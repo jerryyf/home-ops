@@ -19,6 +19,12 @@ spec:
           - /usr/lib/postgresql/18/lib
         extension_control_path:
           - /usr/share/postgresql/18/
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      postInitApplicationSQL:
+        - ALTER USER app WITH SUPERUSER;
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database

@@ -1,13 +1,14 @@
 # home-ops
 
-Home-grown Infrastructure as Code (IaC) for the homelab.
+GitOps for the homelab - featuring Proxmox, K3S and Argo CD.
 
 ## Repository Contents
 
-- [`docs/`](./docs): Documentation files, including architecture diagrams and setup guides.
+- [`apps/`](./apps): Kubernetes manifests for application workloads (e.g., Immich, Jellyfin).
+- [`clusters/`](./clusters): ArgoCD Application definitions for the cluster, using the App-of-Apps pattern.
+- [`docs/`](./docs): Documentation files, including architecture diagrams and troubleshooting guides.
 - [`helm/`](./helm): Helm charts for reusable configuration of Kubernetes applications.
 - [`scripts/`](./scripts): Utility scripts for common tasks such as observability setup.
-- [`.specify/`](./.specify): Configuration for Specify, a tool for managing infrastructure as data.
 - [`terraform/`](./terraform): Modular Terraform code for provisioning infrastructure on various cloud providers or on-premises.
 
 ## Core Components
@@ -16,12 +17,16 @@ The homelab setup focuses on the following core components:
 
 - [**Istio**](https://istio.io): An open-source service mesh that provides traffic management, security, and observability for microservices.
 - [**cert-manager**](https://cert-manager.io): A native Kubernetes certificate management controller that helps with issuing and renewing TLS certificates from various issuing sources.
-- ArgoCD
-- csi-driver-nfs
+- [**ArgoCD**](https://argo-cd.readthedocs.io): GitOps tool for continuous delivery of Kubernetes resources.
+- [**CloudNativePG**](https://cloudnative-pg.io): PostgreSQL operator for managing databases on Kubernetes.
+- [**Proxmox VE**](https://www.proxmox.com): Virtualization platform hosting the Kubernetes cluster and other VMs.
+- [**csi-driver-nfs**](https://github.com/kubernetes-csi/csi-driver-nfs): CSI driver for provisioning NFS volumes.
 
 ## Setup
 
 ### Terraform Provisioning
+
+> Replace `terraform` with `tofu` if using OpenTofu.
 
 In the [`terraform/`](./terraform) directory:
 
