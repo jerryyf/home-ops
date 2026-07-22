@@ -19,6 +19,17 @@ spec:
           - /usr/lib/postgresql/18/lib
         extension_control_path:
           - /usr/share/postgresql/18/
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      secret:
+        name: immich-pg-app
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS "vchord" CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS "vector" CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
