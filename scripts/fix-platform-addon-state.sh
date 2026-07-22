@@ -19,9 +19,12 @@ ADDRESSES=(
 
 FOUND=()
 
+APPLY=${1:-0}
+
 for addr in "${ADDRESSES[@]}"; do
   if terraform state show "$addr" >/dev/null 2>&1; then
     FOUND+=("$addr")
+    echo "Found $addr"
   fi
 done
 
@@ -33,7 +36,7 @@ else
     echo "  - $addr"
   done
 
-  if [[ "$1" = "--apply" ]]; then
+  if [[ "$APPLY" = "--apply" ]]; then
     for addr in "${FOUND[@]}"; do
       echo "Removing: $addr"
       terraform state rm "$addr"
