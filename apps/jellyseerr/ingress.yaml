@@ -31,6 +31,6 @@ spec:
         prefix: /
     route:
     - destination:
-        host: jellyseerr.jellyseerr.svc.cluster.local
+        host: jellyseerr-seerr-chart.jellyseerr.svc.cluster.local
         port:
-          number: 5055
+          number: 80
