@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: jellyseerr
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - hosts:
+        - '*.home.arpa'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: jellyseerr
+  namespace: jellyseerr
+spec:
+  gateways:
+  - istio-ingress/jellyseerr
+  hosts:
+  - 'seerr.home.arpa'
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: jellyseerr.jellyseerr.svc.cluster.local
+        port:
+          number: 5055
