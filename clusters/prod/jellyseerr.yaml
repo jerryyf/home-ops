@@ -18,4 +18,5 @@ spec:
     targetRevision: main
     path: apps/jellyseerr
   - repoURL: ghcr.io/seerr-team/seerr
+    chart: seerr-chart
     targetRevision: 3.9.1
