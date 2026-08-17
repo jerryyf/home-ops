@@ -2,17 +2,26 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: argocd
-  namespace: istio-ingress
+  namespace: argocd
 spec:
   selector:
     istio: ingress
   servers:
     - hosts:
-        - '*.home.arpa'
+        - 'argocd.home.arpa'
       port:
         name: http
         number: 80
         protocol: HTTP
+    - hosts:
+        - 'argocd.home.arpa'
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: argocd-server-tls
 
 ---
 apiVersion: networking.istio.io/v1beta1
@@ -22,7 +31,7 @@ metadata:
   namespace: argocd
 spec:
   gateways:
-  - istio-ingress/argocd
+  - argocd
   hosts:
   - 'argocd.home.arpa'
   http:
