@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jellyfin-tls
+  namespace: istio-ingress
+spec:
+  secretName: jellyfin-tls
+  commonName: jellyfin.home.arpa
+  dnsNames:
+    - jellyfin.home.arpa
+  duration: 168h
+  renewBefore: 24h
+  issuerRef:
+    kind: ClusterIssuer
+    name: home-ca-issuer

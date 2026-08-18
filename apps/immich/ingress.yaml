@@ -8,21 +8,30 @@ spec:
     istio: ingress
   servers:
     - hosts:
-        - '*.home.arpa'
+        - 'immich.home.arpa'
       port:
         name: http
         number: 80
         protocol: HTTP
+    - hosts:
+        - 'immich.home.arpa'
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: immich-tls
 
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: immich
-  namespace: immich
+  namespace: istio-ingress
 spec:
   gateways:
-  - istio-ingress/immich
+  - immich
   hosts:
   - 'immich.home.arpa'
   http:
