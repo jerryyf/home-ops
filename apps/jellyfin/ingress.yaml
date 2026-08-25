@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: jellyfin
-  namespace: istio-ingress
+  namespace: jellyfin
 spec:
   selector:
     istio: ingress
@@ -28,7 +28,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: jellyfin
-  namespace: istio-ingress
+  namespace: jellyfin
 spec:
   gateways:
   - jellyfin
