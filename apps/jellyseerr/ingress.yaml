@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: jellyseerr
-  namespace: istio-ingress
+  namespace: jellyseerr
 spec:
   selector:
     istio: ingress
@@ -22,7 +22,7 @@ metadata:
   namespace: jellyseerr
 spec:
   gateways:
-  - istio-ingress/jellyseerr
+  - jellyseerr
   hosts:
   - 'seerr.home.arpa'
   http:

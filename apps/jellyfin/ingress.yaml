@@ -2,17 +2,26 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: jellyfin
-  namespace: istio-ingress
+  namespace: jellyfin
 spec:
   selector:
     istio: ingress
   servers:
     - hosts:
-        - '*.home.arpa'
+        - 'jellyfin.home.arpa'
       port:
         name: http
         number: 80
         protocol: HTTP
+    - hosts:
+        - 'jellyfin.home.arpa'
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: jellyfin-tls
 
 ---
 apiVersion: networking.istio.io/v1beta1
@@ -22,7 +31,7 @@ metadata:
   namespace: jellyfin
 spec:
   gateways:
-  - istio-ingress/jellyfin
+  - jellyfin
   hosts:
   - 'jellyfin.home.arpa'
   http:

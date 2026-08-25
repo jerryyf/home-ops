@@ -17,8 +17,8 @@ spec:
       enabled: true
     syncOptions:
       - CreateNamespace=true
-  source:
-    repoURL: quay.io/jetstack/charts
+  sources:
+  - repoURL: quay.io/jetstack/charts
     chart: cert-manager
     targetRevision: v1.19.0
     helm:
@@ -26,3 +26,6 @@ spec:
       values: |
         crds:
           enabled: true
+  - repoURL: https://github.com/jerryyf/home-ops.git
+    targetRevision: main
+    path: apps/cert-manager
