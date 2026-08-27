@@ -29,7 +29,7 @@ spec:
           limits:
             cpu: 2
             memory: 4Gi
-            intel.feature.node.kubernetes.io/gpu=true
+            gpu.intel.com/i915: 1
         persistence:
           config:
             storageClass: jellyfin-sc
