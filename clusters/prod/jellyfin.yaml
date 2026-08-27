@@ -33,8 +33,7 @@ spec:
         persistence:
           config:
             storageClass: jellyfin-sc
-            size: 1Gi
-            existingClaim: jellyfin-pvc
+            size: 5Gi
           media:
             storageClass: jellyfin-sc
             size: 1Ti
