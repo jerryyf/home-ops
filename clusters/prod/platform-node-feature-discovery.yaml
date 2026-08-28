@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-node-feature-discovery
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: node-feature-discovery
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
+  sources:
+  - repoURL: registry.k8s.io/nfd/charts
+    chart: node-feature-discovery
+    targetRevision: 0.18.3
+  - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
+    path: deployments/nfd/overlays/node-feature-rules
+  - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
+    path: deployments/gpu_plugin/overlays/nfd_labeled_nodes
