@@ -2,13 +2,13 @@ apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
   name: homepage
-  namespace: istio-ingress
+  namespace: homepage
 spec:
   selector:
     istio: ingress
   servers:
     - hosts:
-        - '*.home.arpa'
+        - 'homepage.home.arpa'
       port:
         name: http
         number: 80
@@ -22,7 +22,7 @@ metadata:
   namespace: homepage
 spec:
   gateways:
-  - istio-ingress/homepage
+  - homepage
   hosts:
   - 'homepage.home.arpa'
   http:
