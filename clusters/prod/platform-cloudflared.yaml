@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudflared
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudflared
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
+  sources:
+  - repoURL: https://github.com/jerryyf/home-ops.git
+    targetRevision: main
+    path: apps/cloudflared
