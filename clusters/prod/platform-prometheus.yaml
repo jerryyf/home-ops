@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-prometheus
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    # Istio's sample addon: a single-replica Prometheus pre-configured to
+    # scrape the mesh. Keep targetRevision in step with the istiod chart
+    # version in platform-istiod.yaml.
+    repoURL: https://github.com/istio/istio
+    targetRevision: release-1.29
+    path: samples/addons
+    directory:
+      recurse: false
+      include: 'prometheus.yaml'
