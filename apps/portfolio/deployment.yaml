@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio
+  namespace: portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio
+  template:
+    metadata:
+      labels:
+        app: portfolio
+    spec:
+      containers:
+        - name: portfolio
+          image: ghcr.io/jerryyf/portfolio:2.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          env:
+            - name: CHAT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-telegram-env
+                  key: CHAT_ID
+            - name: BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-telegram-env
+                  key: BOT_TOKEN
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-aws-env
+                  key: AWS_REGION
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-aws-env
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-aws-env
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_LAMBDA_FUNCTION_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-aws-env
+                  key: AWS_LAMBDA_FUNCTION_NAME
