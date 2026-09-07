@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - hosts:
+        - 'homepage.home.arpa'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  gateways:
+  - homepage
+  hosts:
+  - 'homepage.home.arpa'
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: homepage.homepage.svc.cluster.local
+        port:
+          number: 3000
