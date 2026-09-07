@@ -22,8 +22,28 @@ spec:
     targetRevision: 3.2.0
     helm:
       values: |
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2
+            memory: 4Gi
+            gpu.intel.com/i915: 1
         persistence:
+          config:
+            storageClass: jellyfin-sc
+            size: 5Gi
           media:
             storageClass: jellyfin-sc
             size: 1Ti
             existingClaim: jellyfin-pvc
+        securityContext:
+          privileged: true
+        volumes:
+          - name: dri
+            hostPath:
+              path: /dev/dri
+        volumeMounts:
+          - name: dri
+            mountPath: /dev/dri

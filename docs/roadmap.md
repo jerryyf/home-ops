@@ -1,9 +1,9 @@
 # Roadmap
 
 - [x] Terraform
-- [ ] Argo CD
+- [x] Argo CD
 - [x] Secret management
 - [ ] DNS automation
-- [ ] VLAN automation
-- [ ] Kiali observability
+- [ ] Proxmox automation
+- [x] Kiali observability
 - [ ] Network policies

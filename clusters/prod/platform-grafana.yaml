@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-grafana
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  source:
+    # Istio's sample addon: Grafana with the Istio dashboards and a
+    # Prometheus datasource baked in as ConfigMaps.
+    repoURL: https://github.com/istio/istio
+    targetRevision: release-1.29
+    path: samples/addons
+    directory:
+      recurse: false
+      include: 'grafana.yaml'

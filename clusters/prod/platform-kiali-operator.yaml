@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-kiali-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kiali-operator
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      enabled: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://kiali.org/helm-charts
+    chart: kiali-operator
+    targetRevision: 2.31.0
+    helm:
+      releaseName: kiali-operator
+      values: |
+        # The Kiali CR itself is managed by the `platform-observability`
+        # Application (apps/observability/kiali.yaml) so it can be edited
+        # without a chart upgrade.
+        cr:
+          create: false
