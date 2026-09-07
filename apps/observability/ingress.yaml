@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - hosts:
+        - 'kiali.home.arpa'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+    - hosts:
+        - 'kiali.home.arpa'
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: kiali-tls
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  gateways:
+  - kiali
+  hosts:
+  - 'kiali.home.arpa'
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: kiali.istio-system.svc.cluster.local
+        port:
+          number: 20001
+
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: grafana
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - hosts:
+        - 'grafana.home.arpa'
+      port:
+        name: http
+        number: 80
+        protocol: HTTP
+    - hosts:
+        - 'grafana.home.arpa'
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: grafana-tls
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: grafana
+  namespace: istio-system
+spec:
+  gateways:
+  - grafana
+  hosts:
+  - 'grafana.home.arpa'
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: grafana.istio-system.svc.cluster.local
+        port:
+          number: 3000

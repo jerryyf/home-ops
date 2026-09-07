@@ -1,0 +1,36 @@
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  # Homelab: the mesh console sits behind the home-only Istio gateway, so
+  # there is no identity provider in front of it.
+  auth:
+    strategy: anonymous
+  deployment:
+    cluster_wide_access: true
+    instance_name: kiali
+    replicas: 1
+    view_only_mode: false
+    # Ingress is an Istio Gateway/VirtualService (see ingress.yaml), not a
+    # Kubernetes Ingress managed by the operator.
+    ingress:
+      enabled: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+  istio_namespace: istio-system
+  external_services:
+    prometheus:
+      url: http://prometheus.istio-system.svc.cluster.local:9090
+    grafana:
+      enabled: true
+      internal_url: http://grafana.istio-system.svc.cluster.local:3000
+      external_url: https://grafana.home.arpa
+    # No tracing backend deployed (no Jaeger/Tempo in this cluster).
+    tracing:
+      enabled: false
