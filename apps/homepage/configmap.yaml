@@ -21,20 +21,39 @@ data:
             - abbr: GH
               href: https://github.com/
   services.yaml: |
-    - My First Group:
-        - My First Service:
-            href: http://localhost/
-            description: Homepage is awesome
+    - Media:
+        - Jellyfin:
+            href: https://jellyfin.home.arpa
+            description: Movies & TV
+            icon: jellyfin.png
+            siteMonitor: http://jellyfin.jellyfin.svc.cluster.local:8096
+        - Jellyseerr:
+            href: https://seerr.home.arpa
+            description: Media requests
+            icon: jellyseerr.png
+            siteMonitor: http://jellyseerr-seerr-chart.jellyseerr.svc.cluster.local:80
+        - Immich:
+            href: https://immich.home.arpa
+            description: Photos & videos
+            icon: immich.png
+            siteMonitor: http://immich-server.immich.svc.cluster.local:2283
 
-    - My Second Group:
-        - My Second Service:
-            href: http://localhost/
-            description: Homepage is the best
-
-    - My Third Group:
-        - My Third Service:
-            href: http://localhost/
-            description: Homepage is 😎
+    - Infrastructure:
+        - ArgoCD:
+            href: https://argocd.home.arpa
+            description: GitOps deployments
+            icon: argo-cd.png
+            siteMonitor: http://argocd-server.argocd.svc.cluster.local:80
+        - Grafana:
+            href: https://grafana.home.arpa
+            description: Metrics dashboards
+            icon: grafana.png
+            siteMonitor: http://grafana.istio-system.svc.cluster.local:3000
+        - Kiali:
+            href: https://kiali.home.arpa
+            description: Service mesh observability
+            icon: kiali.png
+            siteMonitor: http://kiali.istio-system.svc.cluster.local:20001
   widgets.yaml: |
     - kubernetes:
         cluster:
