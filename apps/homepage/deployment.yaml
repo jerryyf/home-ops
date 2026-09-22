@@ -51,8 +51,10 @@ spec:
             httpGet:
               path: /api/healthcheck
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
           volumeMounts:
             - mountPath: /app/config/custom.js
               name: homepage-config
@@ -82,11 +84,11 @@ spec:
               name: logs
           resources:
             limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
               cpu: 100m
               memory: 128Mi
-            requests:
-              cpu: 50m
-              memory: 64Mi
       volumes:
         - name: homepage-config
           configMap:
