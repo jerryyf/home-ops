@@ -23,7 +23,7 @@ spec:
     # scrape the mesh. Keep targetRevision in step with the istiod chart
     # version in platform-istiod.yaml.
     repoURL: https://github.com/istio/istio
-    targetRevision: release-1.29
+    targetRevision: release-1.30
     path: samples/addons
     directory:
       recurse: false
