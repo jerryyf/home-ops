@@ -16,7 +16,7 @@ spec:
   sources:
   - repoURL: registry.k8s.io/nfd/charts
     chart: node-feature-discovery
-    targetRevision: 0.18.3
+    targetRevision: 0.20.1
   - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
     path: deployments/nfd/overlays/node-feature-rules
   - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
