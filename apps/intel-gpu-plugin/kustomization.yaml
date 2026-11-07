@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Match the currently resolved Argo revision; avoid unrelated upstream changes.
+  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=3fff58cb3e87506fb68d2267fb6ffe792a82dd1b
+patches:
+  - path: sysfs.yaml

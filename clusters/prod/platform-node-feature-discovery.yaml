@@ -19,5 +19,6 @@ spec:
     targetRevision: 0.20.1
   - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
     path: deployments/nfd/overlays/node-feature-rules
-  - repoURL: https://github.com/intel/intel-device-plugins-for-kubernetes
-    path: deployments/gpu_plugin/overlays/nfd_labeled_nodes
+  - repoURL: https://github.com/jerryyf/home-ops.git
+    targetRevision: fix/intel-gpu-sysfs
+    path: apps/intel-gpu-plugin
