@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: intel-gpu-plugin
+spec:
+  template:
+    spec:
+      containers:
+        - name: intel-gpu-plugin
+          # This exercised binary predates the devfs-only prefix semantics.
+          # A prefix also changes DeviceSpec.HostPath, which breaks containerd.
+          image: intel/intel-gpu-plugin@sha256:0f3c856b1ee31ccb8584d972b7720ff9273dc022e3efc156835ec356f1a67383
+          args:
+            - -enable-monitoring
+            - -v=2
+          volumeMounts:
+            - mountPath: /host/dev
+              $patch: delete
+            - name: devfs
+              mountPath: /dev/dri
+              readOnly: true
+            # Full sysfs preserves symlinks from class/drm into devices/.
+            - name: sysfs
+              mountPath: /sys
+              readOnly: true
+      volumes:
+        - name: devfs
+          hostPath:
+            path: /dev/dri
+            type: Directory
+        - name: sysfs
+          hostPath:
+            path: /sys
+            type: Directory
