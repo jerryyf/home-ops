@@ -34,3 +34,13 @@ the original tracking configuration, NOT a healthy GPU deployment. Prefer
 reverting a bad follow-up commit on the authorized branch. Do not delete
 PVCs or disable Jellyfin's GPU request. Existing failed pod allocations may
 need a normal pod recreation after the plugin rollout; never force-delete.
+
+The legacy binary also reuses existing CDI entries without comparing their
+contents (`pkg/deviceplugin/server.go`, `writeCdiSpecToFilesystem`). During
+migration, `/var/run/cdi/intel.cdi.k8s.io-gpu-card1.yaml` still contained
+`/host/dev/dri/*`. Back up and remove only that proven-stale generated file
+on the GPU node, then recreate the failed Jellyfin pod normally so Allocate
+regenerates it. Verify regenerated host paths are `/dev/dri/*`. This is a
+one-time runtime-cache cleanup, not an application data or PVC change.
+A temporary restricted maintenance pod mounting only `/var/run/cdi` was
+removed after verification. Do not restore the broken CDI cache on rollback.
