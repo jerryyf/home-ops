@@ -21,3 +21,16 @@ spec:
     targetRevision: 4.13.6
     helm:
       releaseName: csi-driver-nfs
+      values: |
+        storageClass:
+          create: true
+          name: nfs-csi
+          parameters:
+            server: 192.168.1.100
+            share: /mnt/store/encrypted/kube
+            subDir: ${pvc.metadata.namespace}/${pvc.metadata.name}
+            onDelete: retain
+          reclaimPolicy: Retain
+          volumeBindingMode: Immediate
+          mountOptions:
+            - nfsvers=4.1
