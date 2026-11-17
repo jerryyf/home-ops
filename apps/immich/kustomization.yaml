@@ -5,4 +5,4 @@ resources:
   - database.yaml
   - pvc.yaml
   - ingress.yaml
-
+  - authorizationpolicy.yaml
