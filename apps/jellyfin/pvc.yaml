@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: jellyfin-pv
 spec:
-  storageClassName: jellyfin-sc
+  storageClassName: ""
   claimRef:
     name: jellyfin-pvc
     namespace: jellyfin
@@ -31,7 +31,7 @@ spec:
   volumeName: jellyfin-pv
   accessModes:
     - ReadWriteMany
-  storageClassName: jellyfin-sc
+  storageClassName: ""
   resources:
     requests:
       storage: 1Ti
