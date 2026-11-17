@@ -32,11 +32,8 @@ spec:
             gpu.intel.com/i915: 1
         persistence:
           config:
-            storageClass: jellyfin-sc
-            size: 5Gi
+            existingClaim: jellyfin-config-nfs
           media:
-            storageClass: jellyfin-sc
-            size: 1Ti
             existingClaim: jellyfin-pvc
         securityContext:
           privileged: true

@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: immich-pv
 spec:
-  storageClassName: immich-sc
+  storageClassName: ""
   claimRef:
     name: immich-pvc
     namespace: immich
@@ -31,7 +31,7 @@ spec:
   volumeName: immich-pv
   accessModes:
     - ReadWriteMany
-  storageClassName: immich-sc
+  storageClassName: ""
   resources:
     requests:
       storage: 512Gi
