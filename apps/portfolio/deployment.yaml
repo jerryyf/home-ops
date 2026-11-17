@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: portfolio
-          image: ghcr.io/jerryyf/portfolio:2.0.1
+          image: ghcr.io/jerryyf/portfolio:3.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -37,23 +37,3 @@ spec:
                 secretKeyRef:
                   name: webhook-telegram-env
                   key: BOT_TOKEN
-            - name: AWS_REGION
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-aws-env
-                  key: AWS_REGION
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-aws-env
-                  key: AWS_ACCESS_KEY_ID
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-aws-env
-                  key: AWS_SECRET_ACCESS_KEY
-            - name: AWS_LAMBDA_FUNCTION_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-aws-env
-                  key: AWS_LAMBDA_FUNCTION_NAME
